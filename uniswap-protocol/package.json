@@ -1,0 +1,7 @@
+{
+  "name": "contracts-vyper-truffle",
+  "version": "1.0.0",
+  "dependencies": {
+    "bn.js": "^5.0.0"
+  }
+}

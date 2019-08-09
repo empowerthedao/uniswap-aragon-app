@@ -24,8 +24,7 @@ export function useSidePanel() {
     const requestOpen = useCallback((sidePanel) => {
         setCurrentSidePanel(sidePanel)
         setVisible(true)
-        setOpened(false)
-    }, [setVisible, setOpened, currentSidePanel])
+    }, [setVisible, currentSidePanel])
 
     const endTransition = useCallback(
         opened => {
@@ -41,8 +40,7 @@ export function useSidePanel() {
 
     const requestClose = useCallback(() => {
         setVisible(false)
-        setOpened(false)
-    }, [setVisible, setOpened])
+    }, [setVisible])
 
     const openPanelActions = {
         transfer: () => requestOpen(sidePanels.TRANSFER),

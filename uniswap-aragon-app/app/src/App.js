@@ -23,10 +23,10 @@ function App() {
     const selectedTabComponent = () => {
         switch (tabs.tabBarSelected.id) {
             case 'SWAP':
-                return  <Swap swapState={swapState} handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
+                return <Swap swapState={swapState} handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
             case 'SETTINGS':
                 return <Settings settings={settings}
-                          handleNewAgent={() => sidePanel.openPanelActions.changeAgent()}/>
+                                 handleNewAgent={() => sidePanel.openPanelActions.changeAgent()}/>
             default:
                 return <div/>
         }
@@ -36,16 +36,17 @@ function App() {
         switch (sidePanel.currentSidePanel.id) {
             case 'CHANGE_AGENT':
                 return <GenericInputPanel actionTitle={'Uniswap Action'}
-                                           actionDescription={`This action will change the Agent which represents an Externally
+                                          actionDescription={`This action will change the Agent which represents an Externally
                                         Owned Account (EOA) and is responsible for interacting with the Uniswap protocol.`}
-                                           inputFieldList={[
-                                               {id: 1, label: 'address', type: 'text'}]}
-                                           submitLabel={'Change agent'}
-                                           handleSubmit={actions.setAgentAddress}/>
+                                          inputFieldList={[
+                                              {id: 1, label: 'address', type: 'text'}]}
+                                          submitLabel={'Change agent'}
+                                          handleSubmit={actions.setAgentAddress}/>
             case 'TRANSFER':
                 return <TransferPanel tokens={tokens}
-                                       handleDeposit={actions.deposit}
-                                       handleWithdraw={actions.withdraw}/>
+                                      opened={sidePanel.opened}
+                                      handleDeposit={actions.deposit}
+                                      handleWithdraw={actions.withdraw}/>
             default:
                 return <div/>
         }

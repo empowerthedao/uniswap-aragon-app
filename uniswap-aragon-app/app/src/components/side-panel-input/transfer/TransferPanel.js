@@ -1,64 +1,42 @@
-import React from 'react'
+import React, {useMemo, useState} from 'react'
 import styled from 'styled-components'
 import {TabBar} from '@aragon/ui'
 
 import Deposit from './Deposit'
 import Withdraw from './Withdraw'
 
-const initialState = {
-    screenIndex: 0,
-}
+const TransferPanel = ({tokens, handleDeposit, handleWithdraw, opened}) => {
 
-class TransferPanel extends React.Component {
-    static defaultProps = {
-        handleDeposit: () => {
-        },
-        handleWithdraw: () => {
-        },
-        proxyAddress: null,
-    }
+    const [screenIndex, setScreenIndex] = useState(0)
 
-    state = {
-        ...initialState,
-    }
-
-    componentWillReceiveProps({opened}) {
-        if (opened && !this.props.opened) {
-            // Reset the state on the panel re-opening, to avoid flickering when it's still closing
-            this.setState({...initialState})
+    useMemo(() => {
+        if (!opened) {
+            setScreenIndex(0)
         }
-    }
+    }, [opened])
 
-    handleChange = screenIndex => {
-        this.setState({screenIndex})
-    }
+    return (
+        <div>
+            <TabBarWrapper>
+                <TabBar
+                    items={['Deposit', 'Withdraw']}
+                    selected={screenIndex}
+                    onChange={setScreenIndex}
+                />
+            </TabBarWrapper>
 
-    render() {
-        const {screenIndex} = this.state
-        const {tokens, handleDeposit, handleWithdraw} = this.props
-        return (
-            <div>
-                <TabBarWrapper>
-                    <TabBar
-                        items={['Deposit', 'Withdraw']}
-                        selected={screenIndex}
-                        onChange={this.handleChange}
-                    />
-                </TabBarWrapper>
-
-                {screenIndex === 0 && (
-                    <Deposit
-                        tokens={tokens} handleDeposit={handleDeposit}
-                    />
-                )}
-                {screenIndex === 1 && (
-                    <Withdraw
-                        tokens={tokens} handleWithdraw={handleWithdraw}
-                    />
-                )}
-            </div>
-        )
-    }
+            {screenIndex === 0 && (
+                <Deposit
+                    tokens={tokens} handleDeposit={handleDeposit}
+                />
+            )}
+            {screenIndex === 1 && (
+                <Withdraw
+                    tokens={tokens} handleWithdraw={handleWithdraw}
+                />
+            )}
+        </div>
+    )
 }
 
 const TabBarWrapper = styled.div`

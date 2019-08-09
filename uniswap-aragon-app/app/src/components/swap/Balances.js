@@ -23,7 +23,7 @@ class Balances extends React.Component {
         this.updateConvertedRates(this.props)
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.updateConvertedRates(nextProps)
     }
 

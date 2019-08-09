@@ -3,18 +3,6 @@ import styled from 'styled-components'
 import Option from "./Option";
 import {Button, IdentityBadge} from "@aragon/ui";
 
-const SettingsContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    max-width: 400px;
-
-`
-const ButtonContainer = styled.div`
-    margin-top: 20px;
-    display: flex;
-`
-
 const Settings = ({handleNewAgent, settings}) => {
     let {appAddress, agentAddress} = settings
 
@@ -34,7 +22,7 @@ const Settings = ({handleNewAgent, settings}) => {
                 </ButtonContainer>
             </Option>
 
-            <Option name="Compound App Address"
+            <Option name="Uniswap App Address"
                     text="The contract address of this app. Do not send funds to this address.">
                 <IdentityBadge
                     entity={appAddress || '0x0000000000000000000000000000000000000000'}
@@ -45,5 +33,17 @@ const Settings = ({handleNewAgent, settings}) => {
         </SettingsContainer>
     )
 }
+
+const SettingsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    max-width: 400px;
+
+`
+const ButtonContainer = styled.div`
+    margin-top: 20px;
+    display: flex;
+`
 
 export default Settings

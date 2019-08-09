@@ -1,4 +1,4 @@
-# Compound Aragon App
+# Uniswap Aragon App
 
 Aragon app for a DAO to interact with the Uniswap protocol.
 

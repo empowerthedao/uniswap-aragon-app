@@ -11,9 +11,9 @@ const initialState = {
 
 class TransferPanel extends React.Component {
     static defaultProps = {
-        onWithdraw: () => {
+        handleDeposit: () => {
         },
-        onDeposit: () => {
+        handleWithdraw: () => {
         },
         proxyAddress: null,
     }
@@ -35,7 +35,7 @@ class TransferPanel extends React.Component {
 
     render() {
         const {screenIndex} = this.state
-        const {appState, handleDeposit, handleWithdraw} = this.props
+        const {tokens, handleDeposit, handleWithdraw} = this.props
         return (
             <div>
                 <TabBarWrapper>
@@ -48,12 +48,12 @@ class TransferPanel extends React.Component {
 
                 {screenIndex === 0 && (
                     <Deposit
-                        appState={appState} handleDeposit={handleDeposit}
+                        tokens={tokens} handleDeposit={handleDeposit}
                     />
                 )}
                 {screenIndex === 1 && (
                     <Withdraw
-                        appState={appState} handleWithdraw={handleWithdraw}
+                        tokens={tokens} handleWithdraw={handleWithdraw}
                     />
                 )}
             </div>

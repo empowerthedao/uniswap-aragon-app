@@ -15,8 +15,8 @@ const ButtonContainer = styled.div`
     display: flex;
 `
 
-const Settings = ({handleNewAgent, appState}) => {
-    let {appAddress, agentAddress} = appState
+const Settings = ({handleNewAgent, settings}) => {
+    let {appAddress, agentAddress} = settings
 
     return (
         <SettingsContainer>

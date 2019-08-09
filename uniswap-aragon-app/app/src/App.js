@@ -11,8 +11,10 @@ import {useAppLogic} from "./hooks/app-logic";
 function App() {
 
     const {
-        appState,
         isSyncing,
+        swapState,
+        tokens,
+        settings,
         actions,
         sidePanel,
         tabs
@@ -21,9 +23,9 @@ function App() {
     const selectedTabComponent = () => {
         switch (tabs.tabBarSelected.id) {
             case 'SWAP':
-                return  <Swap appState={appState} handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
+                return  <Swap swapState={swapState} handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
             case 'SETTINGS':
-                return <Settings appState={appState}
+                return <Settings settings={settings}
                           handleNewAgent={() => sidePanel.openPanelActions.changeAgent()}/>
             default:
                 return <div/>
@@ -41,7 +43,7 @@ function App() {
                                            submitLabel={'Change agent'}
                                            handleSubmit={actions.setAgentAddress}/>
             case 'TRANSFER':
-                return <TransferPanel appState={appState}
+                return <TransferPanel tokens={tokens}
                                        handleDeposit={actions.deposit}
                                        handleWithdraw={actions.withdraw}/>
             default:

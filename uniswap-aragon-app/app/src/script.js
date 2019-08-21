@@ -45,7 +45,6 @@ async function initialize() {
 
 const initialState = async (cachedInitState) => {
     try {
-        const cachedState = await api.state().pipe(first()).toPromise()
         return {
             ...cachedInitState,
             isSyncing: true,
@@ -53,7 +52,7 @@ const initialState = async (cachedInitState) => {
             balances: await agentBalances$(api, activeTokens(cachedInitState)).toPromise()
         }
     } catch (e) {
-        console.error(e)
+        console.error(`Script init error: ${error}`)
         return state
     }
 }
@@ -62,7 +61,7 @@ const onNewEventCatchError = async (state, event) => {
     try {
         return await onNewEvent(state, event)
     } catch (error) {
-        console.error(`Script error: ${error}`)
+        console.error(`Script event error: ${error}`)
     }
 }
 

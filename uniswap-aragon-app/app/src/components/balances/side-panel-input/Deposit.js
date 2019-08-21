@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 const CUSTOM_TOKEN_DECIMALS = -1
 
+// TODO: Replace dropdown with TokenSelector (see new Finance app)
 const Deposit = ({tokens, handleDeposit}) => {
 
     const [tokenSelected, setTokenSelected] = useState(0)
@@ -29,8 +30,9 @@ const Deposit = ({tokens, handleDeposit}) => {
 
                 <FieldStyled label="Token">
                     <DropDown items={tokensAvailable}
-                              required active={tokenSelected}
+                              required
                               onChange={selectedTokenIndex => setTokenSelected(selectedTokenIndex)}
+                              selected={tokenSelected}
                               wide/>
                 </FieldStyled>
 
@@ -57,7 +59,7 @@ const Deposit = ({tokens, handleDeposit}) => {
                     Submit Deposit
                 </ButtonStyled>
 
-                <Info.Action title="Deposit action">
+                <Info.Action title="Transfer action">
                     This action will deposit the specified amount of Tokens or Ether to the Compound App's Agent.
                 </Info.Action>
             </DepositContainer>

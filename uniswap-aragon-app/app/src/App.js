@@ -1,14 +1,22 @@
 import React from 'react'
-import {Main, TabBar, SidePanel, SyncIndicator} from '@aragon/ui'
-
-import AppLayout from "./components/app-layout/AppLayout"
+import {
+    SidePanel,
+    SyncIndicator,
+    useViewport,
+    Button,
+    Header,
+    Tabs
+} from '@aragon/ui'
 import Settings from "./components/settings/Settings"
-import Swap from "./components/swap/Swap";
-import GenericInputPanel from "./components/side-panel-input/GenericInputPanel";
-import TransferPanel from "./components/side-panel-input/transfer/TransferPanel";
+import GenericInputPanel from "./components/GenericInputPanel";
+import TransferPanel from "./components/balances/side-panel-input/TransferPanel";
 import {useAppLogic} from "./hooks/app-logic";
+import SwapIcon from "./assets/swap-icon.svg"
+import PropTypes from 'prop-types';
+import Swap from "./components/swap/Swap";
 
-function App() {
+// TODO: Add link to Uniswap website?
+function App({compactMode}) {
 
     const {
         isSyncing,
@@ -23,10 +31,13 @@ function App() {
     const selectedTabComponent = () => {
         switch (tabs.tabBarSelected.id) {
             case 'SWAP':
-                return <Swap swapState={swapState} handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
+                return <Swap compactMode={compactMode}
+                             swapState={swapState}
+                             handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
             case 'SETTINGS':
                 return <Settings settings={settings}
-                                 handleNewAgent={() => sidePanel.openPanelActions.changeAgent()}/>
+                                 handleNewAgent={() => sidePanel.openPanelActions.changeAgent()}
+                                 compactMode={compactMode}/>
             default:
                 return <div/>
         }
@@ -54,33 +65,53 @@ function App() {
 
     return (
         <div css="min-width: 320px">
-            <Main>
-                <SyncIndicator visible={isSyncing}/>
+            <SyncIndicator visible={isSyncing}/>
 
-                <AppLayout title='Uniswap'
-                           tabs={(<TabBar
-                               items={tabs.names}
-                               selected={tabs.selected}
-                               onChange={tabs.selectTab}/>)}
-                           smallViewPadding={tabs.tabBarSelected.smallViewPadding}>
+            <Header
+                primary="Uniswap"
+                secondary={
+                    tabs.tabBarSelected.id === 'SWAP' &&
+                    <Button
+                        mode="strong"
+                        onClick={() => {}}
+                        css={`${compactMode && `
+                            min-width: 40px;
+                            padding: 0;
+                            `}
+                        `}
+                    >
+                        {compactMode ? <img src={SwapIcon} height="30px" alt=""/> : 'Swap Tokens'}
+                    </Button>
+                }
+            />
 
-                    {selectedTabComponent()}
+            <Tabs
+                items={tabs.names}
+                selected={tabs.selected}
+                onChange={tabs.selectTab}/>
 
-                </AppLayout>
+            {selectedTabComponent()}
 
-                <SidePanel
-                    title={sidePanel.currentSidePanel.title}
-                    opened={sidePanel.visible}
-                    onClose={sidePanel.requestClose}
-                    onTransitionEnd={sidePanel.endTransition}
-                >
-                    {currentSidePanel()}
-                </SidePanel>
-
-
-            </Main>
+            <SidePanel
+                title={sidePanel.currentSidePanel.title}
+                opened={sidePanel.visible}
+                onClose={sidePanel.requestClose}
+                onTransitionEnd={sidePanel.endTransition}
+            >
+                {currentSidePanel()}
+            </SidePanel>
         </div>
     )
 }
 
-export default App
+export default () => {
+    const {below} = useViewport()
+    const compactMode = below('medium')
+
+    return <App compactMode={compactMode}/>
+}
+
+App.propTypes = {
+    api: PropTypes.object,
+    compactMode: PropTypes.bool
+}

@@ -1,5 +1,7 @@
 import React, {useState} from 'react'
-import {Info, DropDown, Field, TextInput, Button, Text, theme, unselectable} from '@aragon/ui'
+import {
+    Info, DropDown, Field, TextInput, Button, unselectable, useTheme
+} from '@aragon/ui'
 import styled from "styled-components";
 
 const Withdraw = ({tokens, handleWithdraw}) => {
@@ -44,10 +46,10 @@ const Withdraw = ({tokens, handleWithdraw}) => {
                         required
                         wide
                     />
-                    <DropDown
-                        items={tokenSymbols}
-                        active={selectedCurrency}
-                        onChange={selectedTokenIndex => setSelectedCurrency(selectedTokenIndex)}
+                    <DropDown css={`margin-left: 16px;`}
+                              items={tokenSymbols}
+                              selected={selectedCurrency}
+                              onChange={selectedTokenIndex => setSelectedCurrency(selectedTokenIndex)}
                     />
                 </CombinedInput>
 
@@ -56,7 +58,7 @@ const Withdraw = ({tokens, handleWithdraw}) => {
                     Submit Withdrawal
                 </ButtonStyled>
 
-                <Info.Action title="Deposit action">
+                <Info.Action title="Transfer action">
                     This action will withdraw the specified amount of Tokens or Ether from the Compound App's Agent.
                 </Info.Action>
             </WithdrawContainer>
@@ -69,7 +71,7 @@ const WithdrawContainer = styled.div`
     flex-direction: column;
 `
 const FieldStyled = styled(Field)`
-    margin-bottom: 20px;
+    margin-bottom: 19px;
 `
 const ButtonStyled = styled(Button)`
     margin-top: 10px;
@@ -78,6 +80,7 @@ const ButtonStyled = styled(Button)`
 
 const CombinedInput = styled.div`
   display: flex;
+  margin-top: 3px;
   margin-bottom: 20px;
   input[type='text'] {
     border-top-right-radius: 0;
@@ -89,21 +92,40 @@ const CombinedInput = styled.div`
     border-bottom-left-radius: 0;
   }
 `
-const StyledTextBlock = styled(Text.Block).attrs({
-    color: theme.textSecondary,
-    smallcaps: true,
-})`
-  ${unselectable()};
-  display: flex;
-`
-const StyledAsterisk = styled.span.attrs({
-    children: '*',
-    title: 'Required',
-})`
-  color: ${theme.accent};
-  margin-left: auto;
-  padding-top: 3px;
-  font-size: 12px;
-`
+
+const StyledTextBlock = props => {
+    const theme = useTheme()
+    return (
+        <div
+            css={`
+        color: ${theme.surfaceContentSecondary};
+        display: flex;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 1.5;
+        ${unselectable()};
+      `}
+            {...props}
+        />
+    )
+}
+
+const StyledAsterisk = props => {
+    const theme = useTheme()
+    return (
+        <span
+            title="Required"
+            css={`
+        color: ${theme.accent};
+        margin-left: 3px;
+        font-size: 12px;
+      `}
+            {...props}
+        >
+      *
+    </span>
+    )
+}
 
 export default Withdraw

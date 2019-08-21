@@ -1,6 +1,6 @@
 import React from "react"
-import Balances from "./Balances";
 import styled from "styled-components";
+import Balances from "../balances/Balances";
 
 const SpacedBlock = styled.div`
   margin-top: 30px;
@@ -9,14 +9,14 @@ const SpacedBlock = styled.div`
   }
 `
 
-const Swap = ({swapState, handleTransfer}) => {
+const Swap = ({swapState, handleTransfer, compactMode}) => {
 
     const {balances} = swapState
 
     return (
         <>
             <SpacedBlock>
-                <Balances balances={balances} handleTransfer={handleTransfer}/>
+                <Balances compactMode={compactMode} balances={balances} handleTransfer={handleTransfer}/>
             </SpacedBlock>
         </>
     )

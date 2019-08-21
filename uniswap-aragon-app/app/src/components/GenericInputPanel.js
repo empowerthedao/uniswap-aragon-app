@@ -7,7 +7,7 @@ const PanelContainer = styled.div`
     flex-direction: column;
 `
 const InfoContainer = styled(Info.Action)`
-    margin-bottom: 20px;
+    margin-top: 30px;
 `
 
 const InputField = ({id, inputFieldLabel, inputFieldType, onChange}) => {
@@ -18,7 +18,7 @@ const InputField = ({id, inputFieldLabel, inputFieldType, onChange}) => {
     }
 
     return (
-        <Field label={inputFieldLabel}>
+        <Field css={`margin-top: 28px;`} label={inputFieldLabel} required>
             <TextInput type={inputFieldType} wide
                        onChange={handleChange}/>
         </Field>
@@ -51,17 +51,18 @@ const GenericInputPanel = ({actionTitle, actionDescription, inputFieldList, subm
     return (
         <PanelContainer>
 
-            <InfoContainer title={actionTitle}>
-                {actionDescription}
-            </InfoContainer>
-
             {inputFields}
 
-            <Button mode="strong" onClick={() => {
+            <Button css={`margin-top: 10px;`} mode="strong" onClick={() => {
                 handleSubmit(...Object.values(sortedInputFieldData()))
             }}>
                 {submitLabel}
             </Button>
+
+            <InfoContainer title={actionTitle}>
+                {actionDescription}
+            </InfoContainer>
+
         </PanelContainer>
     )
 }

@@ -9,13 +9,11 @@ export function useTabs() {
             index: 0,
             id: 'SWAP',
             tabName: 'Swap',
-            smallViewPadding: 0
         },
         {
             index: 1,
             id: 'SETTINGS',
             tabName: 'Settings',
-            smallViewPadding: 30
         }
     ]
 

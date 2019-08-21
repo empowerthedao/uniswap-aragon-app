@@ -43,10 +43,12 @@ const reducer = state => {
         })
     )
 
+    const tokensWithValue = convertedBalances.filter(balance => !balance.amount.isZero())
+
     return {
         ...state,
         // balances: convertedBalances,
-        balances: convertedBalances.filter(balance => !balance.amount.isZero() || balance.symbol === 'ETH'),
+        balances: convertedBalances.filter(balance => !balance.amount.isZero() || (balance.symbol === 'ETH' && tokensWithValue.length === 0)),
         tokens
     }
 }

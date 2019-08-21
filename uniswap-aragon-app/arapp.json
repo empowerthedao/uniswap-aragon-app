@@ -6,8 +6,18 @@
       "params": []
     },
     {
+      "name": "Set the uniswap factory address",
+      "id": "SET_UNISWAP_FACTORY",
+      "params": []
+    },
+    {
       "name": "Transfer agent tokens",
       "id": "TRANSFER_ROLE",
+      "params": []
+    },
+    {
+      "name": "Swap Eth and Tokens",
+      "id": "ETH_TOKEN_SWAP_ROLE",
       "params": []
     }
   ],

@@ -54,12 +54,14 @@ contract TemplateBase is APMNamehash {
 
 contract Template is TemplateBase {
     MiniMeTokenFactory tokenFactory;
+    address uniswapFactory;
 
     uint64 constant PCT = 10 ** 16;
     address constant ANY_ENTITY = address(-1);
 
-    constructor(ENS ens) TemplateBase(DAOFactory(0), ens) public {
+    constructor(ENS ens, address _uniswapFactory) TemplateBase(DAOFactory(0), ens) public {
         tokenFactory = new MiniMeTokenFactory();
+        uniswapFactory = _uniswapFactory;
     }
 
     function newInstance() public {
@@ -82,14 +84,16 @@ contract Template is TemplateBase {
         token.changeController(tokenManager);
 
         // Initialize apps
-        app.initialize(address(agent));
+        app.initialize(address(agent), uniswapFactory);
         tokenManager.initialize(token, true, 0);
         voting.initialize(token, 50 * PCT, 20 * PCT, 1 days);
         agent.initialize();
 
         // Create apps permissions
         acl.createPermission(ANY_ENTITY, app, app.SET_AGENT_ROLE(), root);
+        acl.createPermission(ANY_ENTITY, app, app.SET_UNISWAP_FACTORY(), root);
         acl.createPermission(ANY_ENTITY, app, app.TRANSFER_ROLE(), root);
+        acl.createPermission(ANY_ENTITY, app, app.ETH_TOKEN_SWAP_ROLE(), root);
 
         acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
         acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());

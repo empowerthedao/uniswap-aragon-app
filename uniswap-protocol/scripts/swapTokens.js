@@ -21,27 +21,50 @@ module.exports = async () => {
         const blockTimestamp = (await web3.eth.getBlock('latest')).timestamp
         const futureTimestamp = blockTimestamp + 9999
 
-        // Swap eth for tokens
-        const tokenSwapper = accounts[1]
-        const paymentEthValue = await exchange.getEthToTokenOutputPrice(PURCHASE_TOKENS)
 
-        console.log(`Eth to tokens exchange price: ${await exchange.getEthToTokenOutputPrice(PURCHASE_TOKENS)}`)
+        // Swap eth for tokens using output
+        const tokenSwapper = accounts[1]
+        // const paymentEthValue = await exchange.getEthToTokenOutputPrice(PURCHASE_TOKENS)
+        //
+        // console.log(`Eth to tokens exchange price: ${await exchange.getEthToTokenOutputPrice(PURCHASE_TOKENS)}`)
+        // console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
+        // await exchange.ethToTokenSwapOutput(PURCHASE_TOKENS, futureTimestamp, {from: tokenSwapper, value: paymentEthValue})
+        // console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
+        //
+        // // Swap tokens for eth
+        // const paymentTokenValue = await exchange.getTokenToEthOutputPrice(PURCHASE_ETH)
+        // console.log(`Tokens to eth exchange price ${paymentTokenValue.toString()}`)
+        //
+        // console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
+        // await erc20.approve(exchangeAddress, TOKEN_SUPPLY, {from: tokenSwapper})
+        // await exchange.tokenToEthSwapOutput(PURCHASE_ETH, paymentTokenValue, futureTimestamp, {from: tokenSwapper})
+        // console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
+
+
+        // Swap eth for tokens using input
+        const paymentTokenValue = await exchange.getEthToTokenInputPrice(PURCHASE_ETH)
+
+        console.log(`Eth to tokens exchange price: ${await exchange.getEthToTokenInputPrice(PURCHASE_ETH)}`)
         console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
         console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
-        await exchange.ethToTokenSwapOutput(PURCHASE_TOKENS, futureTimestamp, {from: tokenSwapper, value: paymentEthValue})
+        await exchange.ethToTokenSwapInput(paymentTokenValue, futureTimestamp, {from: tokenSwapper, value: PURCHASE_ETH})
         console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
         console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
 
         // Swap tokens for eth
-        const paymentTokenValue = await exchange.getTokenToEthOutputPrice(PURCHASE_ETH)
-        console.log(`Tokens to eth exchange price ${paymentTokenValue.toString()}`)
-
-        console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
-        console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
-        await erc20.approve(exchangeAddress, TOKEN_SUPPLY, {from: tokenSwapper})
-        await exchange.tokenToEthSwapOutput(PURCHASE_ETH, paymentTokenValue, futureTimestamp, {from: tokenSwapper})
-        console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
-        console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
+        // const paymentTokenValue = await exchange.getTokenToEthOutputPrice(PURCHASE_ETH)
+        // console.log(`Tokens to eth exchange price ${paymentTokenValue.toString()}`)
+        //
+        // console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
+        // await erc20.approve(exchangeAddress, TOKEN_SUPPLY, {from: tokenSwapper})
+        // await exchange.tokenToEthSwapOutput(PURCHASE_ETH, paymentTokenValue, futureTimestamp, {from: tokenSwapper})
+        // console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
 
     } catch (error) {
         console.error(error)

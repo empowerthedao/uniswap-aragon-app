@@ -73,7 +73,7 @@ function App({compactMode}) {
                     tabs.tabBarSelected.id === 'SWAP' &&
                     <Button
                         mode="strong"
-                        onClick={() => {}}
+                        onClick={() => actions.ethToTokenSwapInput()}
                         css={`${compactMode && `
                             min-width: 40px;
                             padding: 0;

@@ -2,6 +2,7 @@
   "name": "contracts-vyper-truffle",
   "version": "1.0.0",
   "dependencies": {
-    "bn.js": "^5.0.0"
+    "bn.js": "^5.0.0",
+    "openzeppelin-solidity": "^2.3.0"
   }
 }

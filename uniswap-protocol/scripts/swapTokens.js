@@ -49,11 +49,11 @@ module.exports = async () => {
         const paymentTokenValue = await exchange.getEthToTokenInputPrice(PURCHASE_ETH)
 
         console.log(`Eth to tokens exchange price: ${await exchange.getEthToTokenInputPrice(PURCHASE_ETH)}`)
-        console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
-        console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
-        await exchange.ethToTokenSwapInput(paymentTokenValue, futureTimestamp, {from: tokenSwapper, value: PURCHASE_ETH})
-        console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
-        console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
+        // console.log(`Eth balance before swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance before swap: ${await erc20.balanceOf(tokenSwapper)}`)
+        // await exchange.ethToTokenSwapInput(paymentTokenValue, futureTimestamp, {from: tokenSwapper, value: PURCHASE_ETH})
+        // console.log(`Eth balance after swap: ${await web3.eth.getBalance(tokenSwapper)}`)
+        // console.log(`Token balance after swap: ${await erc20.balanceOf(tokenSwapper)}\n`)
 
         // Swap tokens for eth
         // const paymentTokenValue = await exchange.getTokenToEthOutputPrice(PURCHASE_ETH)

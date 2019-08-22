@@ -60,7 +60,7 @@ contract Uniswap is AragonApp {
     }
 
     /**
-    * @notice Deposit `@tokenAmount(_token, _value, true, 18)` tokens to the Uniswap App's Agent
+    * @notice Deposit `@tokenAmount(_token, _value, true, 18)` to the Uniswap App's Agent
     * @param _token Address of the token being transferred
     * @param _value Amount of tokens being transferred
     */
@@ -86,7 +86,7 @@ contract Uniswap is AragonApp {
     }
 
     /**
-    * @notice Swap `@tokenAmount(0x0, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`
+    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`
     * @param _token Address of the token to swap ETH for
     * @param _ethAmount Amount of ETH to exchange for the token specified
     * @param _minTokenAmount Minimum amount of tokens to be exchanged for

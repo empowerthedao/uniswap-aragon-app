@@ -9,9 +9,7 @@ const SpacedBlock = styled.div`
   }
 `
 
-const Swap = ({swapState, handleTransfer, compactMode}) => {
-
-    const {balances} = swapState
+const Swap = ({balances, handleTransfer, compactMode}) => {
 
     return (
         <>

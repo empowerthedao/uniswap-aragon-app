@@ -2,27 +2,13 @@ import {zip, from} from 'rxjs'
 import {mergeMap, map, tap, merge, toArray, first} from "rxjs/operators";
 import {agentAddress$, agentApp$, tokenContract$} from "./ExternalContracts";
 import {ETHER_TOKEN_FAKE_ADDRESS, ETH_DECIMALS} from "../lib/shared-constants";
-import {ETHER_TOKEN_VERIFIED_ADDRESSES} from "../lib/verified-tokens";
 import {onErrorReturnDefault} from "../lib/rx-error-operators";
+import {isTokenVerified$} from "./TokenVerification";
 
 const agentInitializationBlock$ = (api) =>
     agentApp$(api).pipe(
         mergeMap(agent => agent.getInitializationBlock())
     )
-
-const network$ = api =>
-    api.network()
-        .pipe(first())
-
-const isTokenVerified = (tokenAddress, networkType) =>
-    // The verified list is without checksums
-    networkType === 'main'
-        ? ETHER_TOKEN_VERIFIED_ADDRESSES.has(tokenAddress.toLowerCase())
-        : true
-
-const isTokenVerified$ = (api, tokenAddress) =>
-    network$(api).pipe(
-        map(network => isTokenVerified(tokenAddress, network)))
 
 const agentEthBalance$ = api => {
 
@@ -73,6 +59,5 @@ const agentBalances$ = (api, tokenAddresses) =>
 
 export {
     agentInitializationBlock$,
-    network$,
     agentBalances$,
 }

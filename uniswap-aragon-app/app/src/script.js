@@ -4,7 +4,7 @@ import retryEvery from "./lib/retry-every"
 import {agentAddress$, agentApp$} from "./web3/ExternalContracts";
 import {agentInitializationBlock$, agentBalances$} from "./web3/AgentData";
 import {ETHER_TOKEN_FAKE_ADDRESS} from "./lib/shared-constants";
-import {availableUniswapTokens$} from "./web3/UniswapData";
+import {uniswapTokens$} from "./web3/UniswapData";
 
 const DEBUG_LOGS = true;
 const debugLog = message => {
@@ -50,7 +50,7 @@ const initialState = async (cachedInitState) => {
             isSyncing: true,
             agentAddress: await agentAddress$(api).toPromise(),
             balances: await agentBalances$(api, activeTokens(cachedInitState)).toPromise(),
-            availableUniswapTokens: await availableUniswapTokens$(api).toPromise()
+            uniswapTokens: await uniswapTokens$(api).toPromise()
         }
     } catch (e) {
         console.error(`Script init error: ${error}`)

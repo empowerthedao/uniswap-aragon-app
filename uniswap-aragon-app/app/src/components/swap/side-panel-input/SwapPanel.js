@@ -1,8 +1,18 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import {Button, DropDown, Info, TextInput, unselectable, useTheme} from '@aragon/ui'
 
-const SwapPanel = ({}) => {
+const SwapPanel = ({swapPanelState}) => {
+
+    const {uniswapTokens} = swapPanelState
+
+    const [selectedInputToken, setSelectedInputToken] = useState(0)
+    const [inputAmount, setInputAmount] = useState(0)
+
+    const [selectedOutputToken, setSelectedOutputToken] = useState(0)
+    const [outputAmount, setOutputAmount] = useState(0)
+
+    const uniswapTokensSymbols = (uniswapTokens || []).map(uniswapToken => uniswapToken.symbol)
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -14,25 +24,48 @@ const SwapPanel = ({}) => {
 
                 <label>
                     <StyledTextBlock>
-                        Amount
+                        Input
                         <StyledAsterisk/>
                     </StyledTextBlock>
                 </label>
                 <CombinedInput>
                     <TextInput
                         type="number"
-                        onChange={event => {}}
+                        onChange={event => setInputAmount(event.target.value)}
                         min={0}
                         step="any"
                         required
                         wide
                     />
-                    {/*<DropDown css={`margin-left: 16px;`}*/}
-                    {/*          items={tokenSymbols}*/}
-                    {/*          selected={selectedCurrency}*/}
-                    {/*          onChange={selectedTokenIndex => setSelectedCurrency(selectedTokenIndex)}*/}
-                    {/*/>*/}
+                    <DropDown css={`margin-left: 16px;`}
+                              items={uniswapTokensSymbols}
+                              selected={selectedInputToken}
+                              onChange={selectedTokenIndex => setSelectedInputToken(selectedTokenIndex)}
+                    />
                 </CombinedInput>
+
+                <label>
+                    <StyledTextBlock>
+                        Output
+                        <StyledAsterisk/>
+                    </StyledTextBlock>
+                </label>
+                <CombinedInput>
+                    <TextInput
+                        type="number"
+                        onChange={event => setOutputAmount(event.target.value)}
+                        min={0}
+                        step="any"
+                        required
+                        wide
+                    />
+                    <DropDown css={`margin-left: 16px;`}
+                              items={uniswapTokensSymbols}
+                              selected={selectedOutputToken}
+                              onChange={selectedTokenIndex => setSelectedOutputToken(selectedTokenIndex)}
+                    />
+                </CombinedInput>
+
 
                 <ButtonStyled wide mode="strong"
                               type="submit">
@@ -40,7 +73,8 @@ const SwapPanel = ({}) => {
                 </ButtonStyled>
 
                 <Info.Action title="Swap action">
-                    This action will swap the specified amount of Ether or Tokens from the Uniswap app's Agent.
+                    This action will exchange the specified input amount of Ether or Tokens from the Uniswap app's Agent
+                    for at least the output value specified.
                 </Info.Action>
             </DepositContainer>
         </form>

@@ -21,8 +21,9 @@ function App({compactMode}) {
 
     const {
         isSyncing,
-        swapState,
         tokens,
+        balances,
+        swapPanelState,
         settings,
         actions,
         sidePanel,
@@ -33,7 +34,7 @@ function App({compactMode}) {
         switch (tabs.tabBarSelected.id) {
             case 'SWAP':
                 return <Swap compactMode={compactMode}
-                             swapState={swapState}
+                             balances={balances}
                              handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
             case 'SETTINGS':
                 return <Settings settings={settings}
@@ -60,7 +61,7 @@ function App({compactMode}) {
                                       handleDeposit={actions.deposit}
                                       handleWithdraw={actions.withdraw}/>
             case 'SWAP':
-                return <SwapPanel/>
+                return <SwapPanel swapPanelState={swapPanelState}/>
             default:
                 return <div/>
         }
@@ -83,7 +84,7 @@ function App({compactMode}) {
                             `}
                         `}
                     >
-                        {compactMode ? <img src={SwapIcon} height="30px" alt=""/> : 'Swap Tokens'}
+                        {compactMode ? <img src={SwapIcon} height="30px" alt=""/> : 'Swap Eth/Tokens'}
                     </Button>
                 }
             />

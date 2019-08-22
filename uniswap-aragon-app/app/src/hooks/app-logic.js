@@ -3,7 +3,7 @@ import {useApi, useAppState} from "@aragon/api-react";
 import {useCallback} from 'react'
 import {useSidePanel} from "./side-panels";
 import {useTabs} from "./tabs";
-import {useSwapState} from "./swap";
+import {useSwapPanelState} from "./swap";
 
 const useSetAgentAddress = (onDone) => {
     const api = useApi()
@@ -47,9 +47,10 @@ export function useAppLogic() {
         tokens,
         appAddress,
         agentAddress,
+        balances
     } = useAppState()
 
-    const swapState = useSwapState()
+    const swapPanelState = useSwapPanelState()
     const settings = {appAddress, agentAddress}
 
     const sidePanel = useSidePanel()
@@ -64,8 +65,9 @@ export function useAppLogic() {
 
     return {
         isSyncing,
-        swapState,
+        balances,
         tokens,
+        swapPanelState,
         settings,
         actions,
         sidePanel,

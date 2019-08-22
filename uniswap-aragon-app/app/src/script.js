@@ -2,9 +2,9 @@ import '@babel/polyfill'
 import Aragon, {events} from '@aragon/api'
 import retryEvery from "./lib/retry-every"
 import {agentAddress$, agentApp$} from "./web3/ExternalContracts";
-import {agentInitializationBlock$, agentBalances$} from "./web3/ExternalData";
-import {first} from 'rxjs/operators'
+import {agentInitializationBlock$, agentBalances$} from "./web3/AgentData";
 import {ETHER_TOKEN_FAKE_ADDRESS} from "./lib/shared-constants";
+import {availableUniswapTokens$} from "./web3/UniswapData";
 
 const DEBUG_LOGS = true;
 const debugLog = message => {
@@ -49,7 +49,8 @@ const initialState = async (cachedInitState) => {
             ...cachedInitState,
             isSyncing: true,
             agentAddress: await agentAddress$(api).toPromise(),
-            balances: await agentBalances$(api, activeTokens(cachedInitState)).toPromise()
+            balances: await agentBalances$(api, activeTokens(cachedInitState)).toPromise(),
+            availableUniswapTokens: await availableUniswapTokens$(api).toPromise()
         }
     } catch (e) {
         console.error(`Script init error: ${error}`)
@@ -67,7 +68,11 @@ const onNewEventCatchError = async (state, event) => {
 
 const onNewEvent = async (state, storeEvent) => {
 
-    const {event: eventName, address: eventAddress} = storeEvent
+    const {
+        event: eventName,
+        address: eventAddress,
+        returnValues: eventParams
+    } = storeEvent
 
     // console.log("Store Event:")
     // console.log(storeEvent)
@@ -104,15 +109,12 @@ const onNewEvent = async (state, storeEvent) => {
         case 'VaultTransfer':
         case 'VaultDeposit':
             debugLog("AGENT TRANSFER")
-            let newActiveTokens = [...state.activeTokens ? state.activeTokens : []]
-            if (storeEvent.returnValues.token !== ETHER_TOKEN_FAKE_ADDRESS) {
-                newActiveTokens.push(storeEvent.returnValues.token)
-            }
-            newActiveTokens = [...new Set(newActiveTokens)]
+            const {token} = eventParams
+            const activeTokensWithToken = newActiveTokens(state, token)
             return {
                 ...state,
-                balances: await agentBalances$(api, newActiveTokens).toPromise(),
-                activeTokens: newActiveTokens
+                balances: await agentBalances$(api, activeTokensWithToken).toPromise(),
+                activeTokens: activeTokensWithToken
             }
         case 'ProxyDeposit':
             debugLog("ETH DEPOSIT")
@@ -120,7 +122,24 @@ const onNewEvent = async (state, storeEvent) => {
                 ...state,
                 balances: await agentBalances$(api, activeTokens(state)).toPromise()
             }
+        case 'EthToTokenSwapInput':
+            debugLog("ETH TO TOKEN SWAP INPUT")
+            const {tokenReturned} = eventParams
+            const activeTokensWithTokenReturned = newActiveTokens(state, tokenReturned)
+            return {
+                ...state,
+                balances: await agentBalances$(api, activeTokensWithTokenReturned).toPromise(),
+                activeTokens: activeTokensWithTokenReturned
+            }
         default:
             return state
     }
+}
+
+const newActiveTokens = (state, newToken) => {
+    let newActiveTokens = [...state.activeTokens ? state.activeTokens : []]
+    if (newToken !== ETHER_TOKEN_FAKE_ADDRESS) {
+        newActiveTokens.push(newToken)
+    }
+    return [...new Set(newActiveTokens)]
 }

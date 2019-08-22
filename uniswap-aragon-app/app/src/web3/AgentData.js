@@ -65,7 +65,8 @@ const agentTokenBalances$ = (api, tokenAddresses) =>
     from(tokenAddresses).pipe(
         mergeMap(tokenAddress => agentTokenBalance$(api, tokenAddress)))
 
-const agentBalances$ = (api, tokenAddresses) => agentEthBalance$(api).pipe(
+const agentBalances$ = (api, tokenAddresses) =>
+    agentEthBalance$(api).pipe(
         merge(agentTokenBalances$(api, tokenAddresses)),
         toArray(),
         onErrorReturnDefault('agentBalances', []))

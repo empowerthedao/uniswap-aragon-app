@@ -38,13 +38,19 @@ async function deposit(api, tokenAddress, amount, decimals) {
     }
 }
 
-const ethToTokenSwapInput = (api) => {
+async function ethToTokenSwapInput (api) {
 
     // ethToTokenSwapInput(address _token, uint256 _ethAmount, uint256 _minTokenAmount, uint256 _secondsUntilExpired)
 
+
+
     const oneEth = toDecimals("1", 18)
 
-    api.ethToTokenSwapInput("0x65A79E38fCb0156d45B85f4b31CC4042021d75DD", oneEth, 320453798885757512036, 100)
+    const currentBlock = await api.web3Eth('getBlock', 'latest').toPromise()
+    const deadline = currentBlock.timestamp + 100
+
+
+    api.ethToTokenSwapInput("0x65A79E38fCb0156d45B85f4b31CC4042021d75DD", oneEth, 320453798885757512036, deadline)
         .subscribe()
 }
 

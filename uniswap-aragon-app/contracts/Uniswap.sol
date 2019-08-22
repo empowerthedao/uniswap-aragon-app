@@ -86,22 +86,20 @@ contract Uniswap is AragonApp {
     }
 
     /**
-    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`
+    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`. Expiring at `@transformTime(_expiredAtTime)`
     * @param _token Address of the token to swap ETH for
     * @param _ethAmount Amount of ETH to exchange for the token specified
     * @param _minTokenAmount Minimum amount of tokens to be exchanged for
-    * @param _secondsUntilExpired Period the swap will remain active
+    * @param _expiredAtTime Time from which the transaction will be considered invalid
     */
-    function ethToTokenSwapInput(address _token, uint256 _ethAmount, uint256 _minTokenAmount, uint256 _secondsUntilExpired)
+    function ethToTokenSwapInput(address _token, uint256 _ethAmount, uint256 _minTokenAmount, uint256 _expiredAtTime)
     external
     auth(ETH_TOKEN_SWAP_ROLE)
     {
         address exchangeAddress = uniswapFactory.getExchange(_token);
         require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 
-        uint256 deadline = now + _secondsUntilExpired;
-
-        bytes memory encodedFunctionCall = abi.encodeWithSignature("ethToTokenSwapInput(uint256,uint256)", _minTokenAmount, deadline);
+        bytes memory encodedFunctionCall = abi.encodeWithSignature("ethToTokenSwapInput(uint256,uint256)", _minTokenAmount, _expiredAtTime);
 
         emit EthToTokenSwapInput(_token);
 

@@ -13,7 +13,7 @@ export function useSidePanel() {
         DEFAULT: defaultSidePanel,
         SWAP: {
             id: 'SWAP',
-            title: 'Swap Eth and Tokens'
+            title: 'Swap Ether and Tokens'
         },
         TRANSFER: {
             id: 'TRANSFER',

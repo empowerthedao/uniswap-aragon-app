@@ -4,7 +4,7 @@ import ERC20Abi from '../abi/erc20-abi'
 import UniswapExchangeAbi from '../abi/uniswap-exchange-abi'
 import UniswapFactoryAbi from '../abi/uniswap-factory-abi'
 import {of} from 'rxjs'
-import {map} from 'rxjs/operators'
+import {map, mergeMap} from 'rxjs/operators'
 
 const agentAddress$ = api => api.call('agent')
 

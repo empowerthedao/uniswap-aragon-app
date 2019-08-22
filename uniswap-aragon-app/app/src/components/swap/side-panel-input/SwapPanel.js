@@ -1,22 +1,28 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {Button, DropDown, Info, TextInput, unselectable, useTheme} from '@aragon/ui'
 
 const SwapPanel = ({swapPanelState}) => {
 
-    const {uniswapTokens} = swapPanelState
+    const {uniswapTokens, getTokensForEthExchangeRate} = swapPanelState
 
     const [selectedInputToken, setSelectedInputToken] = useState(0)
-    const [inputAmount, setInputAmount] = useState(0)
+    const [inputAmount, setInputAmount] = useState("")
 
     const [selectedOutputToken, setSelectedOutputToken] = useState(0)
-    const [outputAmount, setOutputAmount] = useState(0)
+    const [outputAmount, setOutputAmount] = useState("")
 
     const uniswapTokensSymbols = (uniswapTokens || []).map(uniswapToken => uniswapToken.symbol)
 
     const handleSubmit = (event) => {
         event.preventDefault()
     }
+
+    const updateExchangeRate = () => getTokensForEthExchangeRate(uniswapTokens[selectedOutputToken], inputAmount, setOutputAmount)
+
+    useEffect(() => {
+        updateExchangeRate()
+    }, [inputAmount])
 
     return (
         <form onSubmit={event => handleSubmit(event)}>
@@ -31,7 +37,9 @@ const SwapPanel = ({swapPanelState}) => {
                 <CombinedInput>
                     <TextInput
                         type="number"
-                        onChange={event => setInputAmount(event.target.value)}
+                        onChange={event => {
+                            setInputAmount(event.target.value)
+                        }}
                         min={0}
                         step="any"
                         required
@@ -52,6 +60,7 @@ const SwapPanel = ({swapPanelState}) => {
                 </label>
                 <CombinedInput>
                     <TextInput
+                        value={outputAmount}
                         type="number"
                         onChange={event => setOutputAmount(event.target.value)}
                         min={0}

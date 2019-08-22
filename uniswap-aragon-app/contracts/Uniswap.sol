@@ -86,7 +86,7 @@ contract Uniswap is AragonApp {
     }
 
     /**
-    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`. Expiring at `@transformTime(_expiredAtTime)`
+    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
     * @param _token Address of the token to swap ETH for
     * @param _ethAmount Amount of ETH to exchange for the token specified
     * @param _minTokenAmount Minimum amount of tokens to be exchanged for

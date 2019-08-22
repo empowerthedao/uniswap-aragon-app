@@ -14,6 +14,7 @@ import {useAppLogic} from "./hooks/app-logic";
 import SwapIcon from "./assets/swap-icon.svg"
 import PropTypes from 'prop-types';
 import Swap from "./components/swap/Swap";
+import SwapPanel from "./components/swap/side-panel-input/SwapPanel";
 
 // TODO: Add link to Uniswap website?
 function App({compactMode}) {
@@ -58,6 +59,8 @@ function App({compactMode}) {
                                       opened={sidePanel.opened}
                                       handleDeposit={actions.deposit}
                                       handleWithdraw={actions.withdraw}/>
+            case 'SWAP':
+                return <SwapPanel/>
             default:
                 return <div/>
         }
@@ -73,7 +76,7 @@ function App({compactMode}) {
                     tabs.tabBarSelected.id === 'SWAP' &&
                     <Button
                         mode="strong"
-                        onClick={() => actions.ethToTokenSwapInput()}
+                        onClick={() => sidePanel.openPanelActions.swap()}
                         css={`${compactMode && `
                             min-width: 40px;
                             padding: 0;

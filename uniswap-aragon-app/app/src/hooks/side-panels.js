@@ -11,6 +11,10 @@ export function useSidePanel() {
 
     const sidePanels = {
         DEFAULT: defaultSidePanel,
+        SWAP: {
+            id: 'SWAP',
+            title: 'Swap Eth and Tokens'
+        },
         TRANSFER: {
             id: 'TRANSFER',
             title: 'New Agent Transfer'
@@ -43,6 +47,7 @@ export function useSidePanel() {
     }, [setVisible])
 
     const openPanelActions = {
+        swap: () => requestOpen(sidePanels.SWAP),
         transfer: () => requestOpen(sidePanels.TRANSFER),
         changeAgent: () => requestOpen(sidePanels.CHANGE_AGENT)
     }

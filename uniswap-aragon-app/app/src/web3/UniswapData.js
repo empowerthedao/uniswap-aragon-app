@@ -25,7 +25,7 @@ const uniswapTokens$ = api => {
                 )),
             )),
         toArray(),
-        onErrorReturnDefault(`availableUniswapTokens`,  uniswapToken("", 0, "", "", false))
+        onErrorReturnDefault(`uniswapTokens`,  uniswapToken("", 0, "", "", false))
     )
 }
 

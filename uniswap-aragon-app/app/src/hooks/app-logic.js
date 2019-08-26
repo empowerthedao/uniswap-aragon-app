@@ -35,8 +35,8 @@ const useWithdraw = (onDone) => {
 const useEthToTokenSwapInput = (onDone) => {
     const api = useApi()
 
-    return useCallback(() => {
-        ethToTokenSwapInput(api)
+    return useCallback((inputToken, inputAmount, outputToken, minOutputAmount) => {
+        ethToTokenSwapInput(api, inputToken, inputAmount, outputToken, minOutputAmount)
         onDone()
     }, [api])
 }

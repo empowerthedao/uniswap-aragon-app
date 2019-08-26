@@ -61,7 +61,8 @@ function App({compactMode}) {
                                       handleDeposit={actions.deposit}
                                       handleWithdraw={actions.withdraw}/>
             case 'SWAP':
-                return <SwapPanel swapPanelState={swapPanelState}/>
+                return <SwapPanel swapPanelState={swapPanelState}
+                                  handleSwap={actions.ethToTokenSwapInput}/>
             default:
                 return <div/>
         }

@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {Button, DropDown, Info, TextInput, unselectable, useTheme} from '@aragon/ui'
 
-const SwapPanel = ({swapPanelState}) => {
+const SwapPanel = ({swapPanelState, handleSwap}) => {
 
     const {uniswapTokens, getTokensForEthExchangeRate} = swapPanelState
 
@@ -16,6 +16,7 @@ const SwapPanel = ({swapPanelState}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
+        handleSwap(uniswapTokens[selectedInputToken], inputAmount, uniswapTokens[selectedOutputToken], outputAmount)
     }
 
     const updateExchangeRate = () => getTokensForEthExchangeRate(uniswapTokens[selectedOutputToken], inputAmount, setOutputAmount)

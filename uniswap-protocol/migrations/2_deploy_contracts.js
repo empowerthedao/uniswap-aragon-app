@@ -5,7 +5,7 @@ const TestERC20 = artifacts.require('TestERC20')
 
 const valueWithDecimals = (value) => new BN(value).mul(new BN(10).pow(new BN(18)))
 
-// const TOKEN_SUPPLY = valueWithDecimals(1000000)
+const TOKEN_SUPPLY = valueWithDecimals(1000000)
 const EXCHANGE_LIQUIDITY = valueWithDecimals(5000)
 
 module.exports = async (deployer) => {

@@ -2,21 +2,31 @@ import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {Button, DropDown, Info, TextInput, unselectable, useTheme} from '@aragon/ui'
 
+const SELECTOR_SYMBOL_INDEX = 0
+const SELECTOR_SYMBOL = "..."
+const ETH_SYMBOL = "ETH"
+
 const SwapPanel = ({swapPanelState, handleSwap}) => {
 
     const {uniswapTokens, getTokensForEthExchangeRate} = swapPanelState
 
-    const [selectedInputToken, setSelectedInputToken] = useState(0)
-    const [inputAmount, setInputAmount] = useState("")
-
-    const [selectedOutputToken, setSelectedOutputToken] = useState(0)
-    const [outputAmount, setOutputAmount] = useState("")
-
     const uniswapTokensSymbols = (uniswapTokens || []).map(uniswapToken => uniswapToken.symbol)
+    const uniswapTokensSymbolsWithSelector = ["...", ...uniswapTokensSymbols]
+
+    const [inputAmount, setInputAmount] = useState("")
+    const [selectedInputToken, setSelectedInputToken] = useState(0)
+    const [inputTokensSymbols, setInputTokensSymbols] = useState([...uniswapTokensSymbolsWithSelector])
+
+    const [outputAmount, setOutputAmount] = useState("")
+    const [selectedOutputToken, setSelectedOutputToken] = useState(0)
+    const [outputTokensSymbols, setOutputTokensSymbols] = useState([...uniswapTokensSymbolsWithSelector])
+
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        handleSwap(uniswapTokens[selectedInputToken], inputAmount, uniswapTokens[selectedOutputToken], outputAmount)
+        if (selectedInputToken !== SELECTOR_SYMBOL_INDEX && selectedOutputToken !== SELECTOR_SYMBOL_INDEX) {
+            handleSwap(uniswapTokens[selectedInputToken - 1], inputAmount, uniswapTokens[selectedOutputToken - 1], outputAmount)
+        }
     }
 
     const updateExchangeRate = () => getTokensForEthExchangeRate(uniswapTokens[selectedOutputToken], inputAmount, setOutputAmount)
@@ -24,6 +34,56 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
     useEffect(() => {
         updateExchangeRate()
     }, [inputAmount])
+
+    const positionOfSelector = (tokenSymbols) => tokenSymbols.indexOf(SELECTOR_SYMBOL)
+
+    const positionOfEthSymbol = (tokenSymbols) => tokenSymbols.indexOf(ETH_SYMBOL)
+
+    const updateSymbolsOnInputTokenSelection = (selectedInputTokenIndex) => {
+
+        if (selectedInputTokenIndex === positionOfSelector(inputTokensSymbols)) {
+
+            const selectedOutputTokenSymbol = outputTokensSymbols[selectedOutputToken]
+            setSelectedOutputToken(uniswapTokensSymbolsWithSelector.indexOf(selectedOutputTokenSymbol))
+
+            setOutputTokensSymbols([...uniswapTokensSymbolsWithSelector])
+
+        } else if (selectedInputTokenIndex === positionOfEthSymbol(inputTokensSymbols)) {
+
+            const filteredUniswapTokensSymbols = [...uniswapTokensSymbolsWithSelector.filter(symbol => symbol !== ETH_SYMBOL || symbol === SELECTOR_SYMBOL)]
+            const selectedOutputTokenSymbol = outputTokensSymbols[selectedOutputToken]
+            setSelectedOutputToken(filteredUniswapTokensSymbols.indexOf(selectedOutputTokenSymbol))
+
+            setOutputTokensSymbols(filteredUniswapTokensSymbols)
+        } else {
+            setOutputTokensSymbols([...uniswapTokensSymbolsWithSelector.filter(symbol => symbol === ETH_SYMBOL || symbol === SELECTOR_SYMBOL)])
+        }
+
+        setSelectedInputToken(selectedInputTokenIndex)
+    }
+
+    const updateSymbolsOnOutputTokenSelection = (selectedOutputTokenIndex) => {
+
+        if (selectedOutputTokenIndex === positionOfSelector(outputTokensSymbols)) {
+
+            const selectedInputTokenSymbol = inputTokensSymbols[selectedInputToken]
+            setSelectedInputToken(uniswapTokensSymbolsWithSelector.indexOf(selectedInputTokenSymbol))
+
+            setInputTokensSymbols([...uniswapTokensSymbolsWithSelector])
+
+        } else if (selectedOutputTokenIndex === positionOfEthSymbol(outputTokensSymbols)) {
+
+            const filteredUniswapTokensSymbols = [...uniswapTokensSymbolsWithSelector.filter(symbol => symbol !== ETH_SYMBOL || symbol === SELECTOR_SYMBOL)]
+            const selectedInputTokenSymbol = inputTokensSymbols[selectedInputToken]
+            setSelectedInputToken(filteredUniswapTokensSymbols.indexOf(selectedInputTokenSymbol))
+
+            setInputTokensSymbols(filteredUniswapTokensSymbols)
+        } else {
+            setInputTokensSymbols([...uniswapTokensSymbolsWithSelector.filter(symbol => symbol === ETH_SYMBOL || symbol === SELECTOR_SYMBOL)])
+        }
+
+        setSelectedOutputToken(selectedOutputTokenIndex)
+    }
 
     return (
         <form onSubmit={event => handleSubmit(event)}>
@@ -46,10 +106,10 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
                         required
                         wide
                     />
-                    <DropDown css={`margin-left: 16px;`}
-                              items={uniswapTokensSymbols}
+                    <DropDown css={`margin-left: 16px; min-width: 87px;`}
+                              items={inputTokensSymbols}
                               selected={selectedInputToken}
-                              onChange={selectedTokenIndex => setSelectedInputToken(selectedTokenIndex)}
+                              onChange={selectedTokenIndex => updateSymbolsOnInputTokenSelection(selectedTokenIndex)}
                     />
                 </CombinedInput>
 
@@ -69,10 +129,10 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
                         required
                         wide
                     />
-                    <DropDown css={`margin-left: 16px;`}
-                              items={uniswapTokensSymbols}
+                    <DropDown css={`margin-left: 16px; min-width: 87px;`}
+                              items={outputTokensSymbols}
                               selected={selectedOutputToken}
-                              onChange={selectedTokenIndex => setSelectedOutputToken(selectedTokenIndex)}
+                              onChange={selectedTokenIndex => updateSymbolsOnOutputTokenSelection(selectedTokenIndex)}
                     />
                 </CombinedInput>
 

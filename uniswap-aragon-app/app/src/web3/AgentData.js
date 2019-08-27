@@ -47,6 +47,13 @@ const agentTokenBalance$ = (api, tokenAddress) => {
     )
 }
 
+// Always fetch the token balances of the Uniswap tokens available.
+// const uniswapTokenAddresses$ = (api) =>
+//     compoundTokenAddresses$(api).pipe(
+//         concatMap(address => address),
+//         mergeMap(compoundTokenAddress => compoundToken$(api, compoundTokenAddress)),
+//         mergeMap(compoundToken => compoundToken.underlying()))
+
 const agentTokenBalances$ = (api, tokenAddresses) =>
     from(tokenAddresses).pipe(
         mergeMap(tokenAddress => agentTokenBalance$(api, tokenAddress)))

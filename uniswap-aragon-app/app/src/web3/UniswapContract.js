@@ -3,7 +3,7 @@ import {ETHER_TOKEN_FAKE_ADDRESS} from "../lib/shared-constants";
 import {tokenContract$} from "./ExternalContracts";
 import {mergeMap} from 'rxjs/operators'
 
-const MAX_CONFIRMATION_PERIOD_SECONDS = 100
+const MAX_CONFIRMATION_PERIOD_SECONDS = 60 * 60 * 24 * 10 // 10 days (needs to be in the future or ganache might crash)
 
 const setAgent = (api, address) => {
     api.setAgent(address)
@@ -40,16 +40,22 @@ async function deposit(api, tokenAddress, amount, decimals) {
     }
 }
 
-async function ethToTokenSwapInput(api, inputToken, inputAmount, outputToken, minOutputAmount) {
+async function ethToTokenSwapInput(api, inputToken, inputAmount, outputToken, outputAmount) {
 
     const convertedInputAmount = toDecimals(inputAmount, parseInt(inputToken.decimals))
-    const convertedOutputAmount = toDecimals(minOutputAmount, parseInt(outputToken.decimals))
+    const convertedOutputAmount = toDecimals(outputAmount, parseInt(outputToken.decimals))
 
     const currentBlock = await api.web3Eth('getBlock', 'latest').toPromise()
     const deadline = currentBlock.timestamp + MAX_CONFIRMATION_PERIOD_SECONDS
 
-    api.ethToTokenSwapInput(outputToken.address, convertedInputAmount, convertedOutputAmount, deadline)
-        .subscribe()
+    if (inputToken.address === ETHER_TOKEN_FAKE_ADDRESS && outputToken.address !== ETHER_TOKEN_FAKE_ADDRESS) {
+        api.ethToTokenSwapInput(outputToken.address, convertedInputAmount, convertedOutputAmount, deadline)
+            .subscribe()
+    } else if (inputToken.address !== ETHER_TOKEN_FAKE_ADDRESS && outputToken.address === ETHER_TOKEN_FAKE_ADDRESS) {
+
+    }
+
+
 }
 
 export {

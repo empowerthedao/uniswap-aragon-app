@@ -31,6 +31,7 @@ const uniswapExchangeFromToken$ = (api, tokenAddress) =>
 
 export {
     agentAddress$,
+    uniswapFactoryAddress$,
     agentApp$,
     tokenContract$,
     uniswapFactory$,

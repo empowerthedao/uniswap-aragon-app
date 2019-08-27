@@ -21,11 +21,16 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
     const [selectedOutputToken, setSelectedOutputToken] = useState(0)
     const [outputTokensSymbols, setOutputTokensSymbols] = useState([...uniswapTokensSymbolsWithSelector])
 
+    const uniswapTokenFromSelectedIndex = (tokenSymbols, selectedIndex) => {
+        const selectedTokenSymbol = tokenSymbols[selectedIndex]
+        return uniswapTokens.find(token => token.symbol === selectedTokenSymbol)
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         if (selectedInputToken !== SELECTOR_SYMBOL_INDEX && selectedOutputToken !== SELECTOR_SYMBOL_INDEX) {
-            handleSwap(uniswapTokens[selectedInputToken - 1], inputAmount, uniswapTokens[selectedOutputToken - 1], outputAmount)
+            handleSwap(uniswapTokenFromSelectedIndex(inputTokensSymbols, selectedInputToken), inputAmount,
+                uniswapTokenFromSelectedIndex(outputTokensSymbols, selectedOutputToken), outputAmount)
         }
     }
 

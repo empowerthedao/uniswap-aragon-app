@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import Aragon, {events} from '@aragon/api'
 import retryEvery from "./lib/retry-every"
-import {agentAddress$, agentApp$} from "./web3/ExternalContracts";
+import {agentAddress$, agentApp$, uniswapFactoryAddress$} from "./web3/ExternalContracts";
 import {agentInitializationBlock$, agentBalances$} from "./web3/AgentData";
 import {ETHER_TOKEN_FAKE_ADDRESS} from "./lib/shared-constants";
 import {uniswapTokens$} from "./web3/UniswapData";
@@ -49,6 +49,7 @@ const initialState = async (cachedInitState) => {
             ...cachedInitState,
             isSyncing: true,
             agentAddress: await agentAddress$(api).toPromise(),
+            uniswapFactoryAddress: await uniswapFactoryAddress$(api).toPromise(),
             balances: await agentBalances$(api, activeTokens(cachedInitState)).toPromise(),
             uniswapTokens: await uniswapTokens$(api).toPromise()
         }

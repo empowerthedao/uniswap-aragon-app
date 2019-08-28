@@ -8,7 +8,7 @@ const ETH_SYMBOL = "ETH"
 
 const SwapPanel = ({swapPanelState, handleSwap}) => {
 
-    const {uniswapTokens, getTokensForEthExchangeRate} = swapPanelState
+    const {uniswapTokens, getTokensEthExchangeRate} = swapPanelState
 
     const uniswapTokensSymbols = (uniswapTokens || []).map(uniswapToken => uniswapToken.symbol)
     const uniswapTokensSymbolsWithSelector = ["...", ...uniswapTokensSymbols]
@@ -37,7 +37,7 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
         }
     }
 
-    const updateExchangeRate = () => getTokensForEthExchangeRate(selectedInputToken(), inputAmount, selectedOutputToken(), setOutputAmount)
+    const updateExchangeRate = () => getTokensEthExchangeRate(selectedInputToken(), inputAmount, selectedOutputToken(), setOutputAmount)
 
     useEffect(() => {
         updateExchangeRate()
@@ -152,7 +152,8 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
 
                 <Info.Action title="Swap action">
                     This action will exchange the specified input amount of Ether or Tokens from the Uniswap app's Agent
-                    for at least the output value specified.
+                    for at least the output value specified. The autofilled output amount is the Uniswap exchange's
+                    recommended amount reduced by 1% to account for price slippage.
                 </Info.Action>
             </DepositContainer>
         </form>

@@ -2,11 +2,11 @@ import {useCallback} from 'react'
 import {useApi, useAppState} from "@aragon/api-react";
 import {ETHER_TOKEN_FAKE_ADDRESS} from "../lib/shared-constants";
 import {uniswapExchangeFromToken$} from "../web3/ExternalContracts";
-import {mergeMap, tap} from "rxjs/operators";
+import {mergeMap, map, tap} from "rxjs/operators";
 import {fromDecimals, toDecimals} from "../lib/math-utils";
-import BN from "bn.js"
+import BN from 'bn.js'
 
-const useGetTokensForEthExchangeRate = () => {
+const useGetTokensEthExchangeRate = () => {
     const api = useApi()
 
     return useCallback((inputToken, inputAmount, outputToken, exchangeRateCallback) => {
@@ -17,27 +17,26 @@ const useGetTokensForEthExchangeRate = () => {
 
         const adjustedInputAmount = toDecimals(inputAmount, inputToken.decimals)
 
-        if (inputToken.address === ETHER_TOKEN_FAKE_ADDRESS && outputToken.address !== ETHER_TOKEN_FAKE_ADDRESS) {
+        const mapExchangeRate = exchangeRate => {
+            const exchangeRateBN = new BN(exchangeRate)
+            const slippageReducedExchangeRate = exchangeRateBN.mul(new BN('99')).div(new BN('100')) // Reduced by 1%
+            return fromDecimals(slippageReducedExchangeRate.toString(), parseInt(outputToken.decimals))
+        }
 
+        if (inputToken.address === ETHER_TOKEN_FAKE_ADDRESS && outputToken.address !== ETHER_TOKEN_FAKE_ADDRESS) {
             uniswapExchangeFromToken$(api, outputToken.address).pipe(
-                mergeMap(uniswapExchange => uniswapExchange.getEthToTokenInputPrice(adjustedInputAmount)))
-                .subscribe(exchangeRate => {
-                    const adjustedExchangeRate = fromDecimals(exchangeRate, parseInt(outputToken.decimals))
+                mergeMap(uniswapExchange => uniswapExchange.getEthToTokenInputPrice(adjustedInputAmount)),
+                map(mapExchangeRate))
+                .subscribe(adjustedExchangeRate => {
                     exchangeRateCallback(adjustedExchangeRate)
                 })
 
         } else if (inputToken.address !== ETHER_TOKEN_FAKE_ADDRESS && outputToken.address === ETHER_TOKEN_FAKE_ADDRESS) {
-
             uniswapExchangeFromToken$(api, inputToken.address).pipe(
-                mergeMap(uniswapExchange => uniswapExchange.getTokenToEthInputPrice(adjustedInputAmount)))
+                mergeMap(uniswapExchange => uniswapExchange.getTokenToEthInputPrice(adjustedInputAmount)),
+                map(mapExchangeRate))
                 .subscribe(exchangeRate => {
-
-                    console.log(adjustedInputAmount)
-
-                    console.log(exchangeRate)
-
-                    const adjustedExchangeRate = fromDecimals(exchangeRate, parseInt(outputToken.decimals))
-                    exchangeRateCallback(adjustedExchangeRate)
+                    exchangeRateCallback(exchangeRate)
                 })
         }
 
@@ -54,6 +53,6 @@ export function useSwapPanelState() {
 
     return {
         uniswapTokens: uniswapTokensWithEth,
-        getTokensForEthExchangeRate: useGetTokensForEthExchangeRate()
+        getTokensEthExchangeRate: useGetTokensEthExchangeRate()
     }
 }

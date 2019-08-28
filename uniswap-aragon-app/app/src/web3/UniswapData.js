@@ -1,14 +1,17 @@
 import {tokenContract$, uniswapFactory$} from "./ExternalContracts";
 import {range, zip} from "rxjs"
-import {mergeMap, tap, toArray, map} from "rxjs/operators";
+import {mergeMap, tap, toArray, map, filter} from "rxjs/operators";
 import {isTokenVerified$} from "./TokenVerification";
 import {onErrorReturnDefault} from "../lib/rx-error-operators";
+import WHITELISTED_UNISWAP_TOKENS from "../lib/whitelisted-uniswap-tokens"
 
 const uniswapTokensAddresses$ = api =>
     uniswapFactory$(api).pipe(
         mergeMap(uniswapFactory => uniswapFactory.tokenCount().pipe(
             mergeMap(tokenCount => range(1, tokenCount)),
-            mergeMap(tokenId => uniswapFactory.getTokenWithId(tokenId))
+            mergeMap(tokenId => uniswapFactory.getTokenWithId(tokenId)),
+            // Comment out the filter below to display all Uniswap tokens available
+            filter(tokenAddress => WHITELISTED_UNISWAP_TOKENS.includes(tokenAddress))
         ))
     )
 
@@ -29,7 +32,7 @@ const uniswapTokens$ = api => {
             ))
         )),
         toArray(),
-        onErrorReturnDefault(`uniswapTokens`, uniswapToken("", 0, "", "", false))
+        onErrorReturnDefault(`uniswapTokens`, [uniswapToken("", 0, "", "", false)])
     )
 }
 

@@ -4,5 +4,5 @@ contract UniswapExchangeInterface {
 
     function getEthToTokenInputPrice(uint256 eth_sold) returns (uint256);
 
-    function getEthToTokenOutputPrice(uint256 tokens_bought) returns (uint256);
+    function getTokenToEthInputPrice(uint256 tokens_bought) returns (uint256);
 }

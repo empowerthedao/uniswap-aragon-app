@@ -1,6 +1,6 @@
 import {useCallback} from 'react'
 import {useApi, useAppState} from "@aragon/api-react";
-import {ETHER_TOKEN_FAKE_ADDRESS, ETH_DECIMALS} from "../lib/shared-constants";
+import {ETHER_TOKEN_FAKE_ADDRESS} from "../lib/shared-constants";
 import {uniswapExchangeFromToken$} from "../web3/ExternalContracts";
 import {mergeMap, tap} from "rxjs/operators";
 import {fromDecimals, toDecimals} from "../lib/math-utils";
@@ -9,26 +9,45 @@ import BN from "bn.js"
 const useGetTokensForEthExchangeRate = () => {
     const api = useApi()
 
-    return useCallback((token, ethAmount, onDone) => {
+    return useCallback((inputToken, inputAmount, outputToken, exchangeRateCallback) => {
 
-        if (ethAmount === "" || parseFloat(ethAmount) === 0) {
+        if (inputAmount === "" || parseFloat(inputAmount) === 0 || !inputToken || !outputToken) {
             return
         }
 
-        const adjustedEthAmount = toDecimals(ethAmount, ETH_DECIMALS)
-        uniswapExchangeFromToken$(api, token.address).pipe(
-            mergeMap(uniswapExchange => uniswapExchange.getEthToTokenInputPrice(adjustedEthAmount)))
-            .subscribe(exchangeRate => {
-                const adjustedExchangeRate = fromDecimals(exchangeRate, parseInt(token.decimals))
-                onDone(adjustedExchangeRate)
-            })
+        const adjustedInputAmount = toDecimals(inputAmount, inputToken.decimals)
+
+        if (inputToken.address === ETHER_TOKEN_FAKE_ADDRESS && outputToken.address !== ETHER_TOKEN_FAKE_ADDRESS) {
+
+            uniswapExchangeFromToken$(api, outputToken.address).pipe(
+                mergeMap(uniswapExchange => uniswapExchange.getEthToTokenInputPrice(adjustedInputAmount)))
+                .subscribe(exchangeRate => {
+                    const adjustedExchangeRate = fromDecimals(exchangeRate, parseInt(outputToken.decimals))
+                    exchangeRateCallback(adjustedExchangeRate)
+                })
+
+        } else if (inputToken.address !== ETHER_TOKEN_FAKE_ADDRESS && outputToken.address === ETHER_TOKEN_FAKE_ADDRESS) {
+
+            uniswapExchangeFromToken$(api, inputToken.address).pipe(
+                mergeMap(uniswapExchange => uniswapExchange.getTokenToEthInputPrice(adjustedInputAmount)))
+                .subscribe(exchangeRate => {
+
+                    console.log(adjustedInputAmount)
+
+                    console.log(exchangeRate)
+
+                    const adjustedExchangeRate = fromDecimals(exchangeRate, parseInt(outputToken.decimals))
+                    exchangeRateCallback(adjustedExchangeRate)
+                })
+        }
+
     }, [api])
 }
 
 export function useSwapPanelState() {
     const {uniswapTokens, tokens} = useAppState()
 
-    const uniswapTokensMapped = (uniswapTokens || []).map(token => ({...token, decimals: new BN(token.decimals)}))
+    const uniswapTokensMapped = (uniswapTokens || []).map(token => ({...token, decimals: parseInt(token.decimals)}))
 
     const ethToken = tokens.find(token => token.address === ETHER_TOKEN_FAKE_ADDRESS)
     const uniswapTokensWithEth = ethToken ? [ethToken, ...(uniswapTokensMapped || [])] : uniswapTokensMapped || []

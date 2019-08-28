@@ -14,11 +14,11 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
     const uniswapTokensSymbolsWithSelector = ["...", ...uniswapTokensSymbols]
 
     const [inputAmount, setInputAmount] = useState("")
-    const [selectedInputToken, setSelectedInputToken] = useState(0)
+    const [selectedInputTokenIndex, setSelectedInputTokenIndex] = useState(0)
     const [inputTokensSymbols, setInputTokensSymbols] = useState([...uniswapTokensSymbolsWithSelector])
 
     const [outputAmount, setOutputAmount] = useState("")
-    const [selectedOutputToken, setSelectedOutputToken] = useState(0)
+    const [selectedOutputTokenIndex, setSelectedOutputTokenIndex] = useState(0)
     const [outputTokensSymbols, setOutputTokensSymbols] = useState([...uniswapTokensSymbolsWithSelector])
 
     const uniswapTokenFromSelectedIndex = (tokenSymbols, selectedIndex) => {
@@ -26,68 +26,71 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
         return uniswapTokens.find(token => token.symbol === selectedTokenSymbol)
     }
 
+    const selectedInputToken = () => uniswapTokenFromSelectedIndex(inputTokensSymbols, selectedInputTokenIndex)
+
+    const selectedOutputToken = () => uniswapTokenFromSelectedIndex(outputTokensSymbols, selectedOutputTokenIndex)
+
     const handleSubmit = (event) => {
         event.preventDefault()
-        if (selectedInputToken !== SELECTOR_SYMBOL_INDEX && selectedOutputToken !== SELECTOR_SYMBOL_INDEX) {
-            handleSwap(uniswapTokenFromSelectedIndex(inputTokensSymbols, selectedInputToken), inputAmount,
-                uniswapTokenFromSelectedIndex(outputTokensSymbols, selectedOutputToken), outputAmount)
+        if (selectedInputTokenIndex !== SELECTOR_SYMBOL_INDEX && selectedOutputTokenIndex !== SELECTOR_SYMBOL_INDEX) {
+            handleSwap(selectedInputToken(), inputAmount, selectedOutputToken(), outputAmount)
         }
     }
 
-    const updateExchangeRate = () => getTokensForEthExchangeRate(uniswapTokens[selectedOutputToken], inputAmount, setOutputAmount)
+    const updateExchangeRate = () => getTokensForEthExchangeRate(selectedInputToken(), inputAmount, selectedOutputToken(), setOutputAmount)
 
     useEffect(() => {
         updateExchangeRate()
-    }, [inputAmount])
+    }, [inputAmount, selectedInputTokenIndex, selectedOutputTokenIndex])
 
     const positionOfSelector = (tokenSymbols) => tokenSymbols.indexOf(SELECTOR_SYMBOL)
 
     const positionOfEthSymbol = (tokenSymbols) => tokenSymbols.indexOf(ETH_SYMBOL)
 
-    const updateSymbolsOnInputTokenSelection = (selectedInputTokenIndex) => {
+    const updateSymbolsOnInputTokenSelection = (newSelectedInputTokenIndex) => {
 
-        if (selectedInputTokenIndex === positionOfSelector(inputTokensSymbols)) {
+        if (newSelectedInputTokenIndex === positionOfSelector(inputTokensSymbols)) {
 
-            const selectedOutputTokenSymbol = outputTokensSymbols[selectedOutputToken]
-            setSelectedOutputToken(uniswapTokensSymbolsWithSelector.indexOf(selectedOutputTokenSymbol))
+            const selectedOutputTokenSymbol = outputTokensSymbols[selectedOutputTokenIndex]
+            setSelectedOutputTokenIndex(uniswapTokensSymbolsWithSelector.indexOf(selectedOutputTokenSymbol))
 
             setOutputTokensSymbols([...uniswapTokensSymbolsWithSelector])
 
-        } else if (selectedInputTokenIndex === positionOfEthSymbol(inputTokensSymbols)) {
+        } else if (newSelectedInputTokenIndex === positionOfEthSymbol(inputTokensSymbols)) {
 
             const filteredUniswapTokensSymbols = [...uniswapTokensSymbolsWithSelector.filter(symbol => symbol !== ETH_SYMBOL || symbol === SELECTOR_SYMBOL)]
-            const selectedOutputTokenSymbol = outputTokensSymbols[selectedOutputToken]
-            setSelectedOutputToken(filteredUniswapTokensSymbols.indexOf(selectedOutputTokenSymbol))
+            const selectedOutputTokenSymbol = outputTokensSymbols[selectedOutputTokenIndex]
+            setSelectedOutputTokenIndex(filteredUniswapTokensSymbols.indexOf(selectedOutputTokenSymbol))
 
             setOutputTokensSymbols(filteredUniswapTokensSymbols)
         } else {
             setOutputTokensSymbols([...uniswapTokensSymbolsWithSelector.filter(symbol => symbol === ETH_SYMBOL || symbol === SELECTOR_SYMBOL)])
         }
 
-        setSelectedInputToken(selectedInputTokenIndex)
+        setSelectedInputTokenIndex(newSelectedInputTokenIndex)
     }
 
-    const updateSymbolsOnOutputTokenSelection = (selectedOutputTokenIndex) => {
+    const updateSymbolsOnOutputTokenSelection = (newSelectedOutputTokenIndex) => {
 
-        if (selectedOutputTokenIndex === positionOfSelector(outputTokensSymbols)) {
+        if (newSelectedOutputTokenIndex === positionOfSelector(outputTokensSymbols)) {
 
-            const selectedInputTokenSymbol = inputTokensSymbols[selectedInputToken]
-            setSelectedInputToken(uniswapTokensSymbolsWithSelector.indexOf(selectedInputTokenSymbol))
+            const selectedInputTokenSymbol = inputTokensSymbols[selectedInputTokenIndex]
+            setSelectedInputTokenIndex(uniswapTokensSymbolsWithSelector.indexOf(selectedInputTokenSymbol))
 
             setInputTokensSymbols([...uniswapTokensSymbolsWithSelector])
 
-        } else if (selectedOutputTokenIndex === positionOfEthSymbol(outputTokensSymbols)) {
+        } else if (newSelectedOutputTokenIndex === positionOfEthSymbol(outputTokensSymbols)) {
 
             const filteredUniswapTokensSymbols = [...uniswapTokensSymbolsWithSelector.filter(symbol => symbol !== ETH_SYMBOL || symbol === SELECTOR_SYMBOL)]
-            const selectedInputTokenSymbol = inputTokensSymbols[selectedInputToken]
-            setSelectedInputToken(filteredUniswapTokensSymbols.indexOf(selectedInputTokenSymbol))
+            const selectedInputTokenSymbol = inputTokensSymbols[selectedInputTokenIndex]
+            setSelectedInputTokenIndex(filteredUniswapTokensSymbols.indexOf(selectedInputTokenSymbol))
 
             setInputTokensSymbols(filteredUniswapTokensSymbols)
         } else {
             setInputTokensSymbols([...uniswapTokensSymbolsWithSelector.filter(symbol => symbol === ETH_SYMBOL || symbol === SELECTOR_SYMBOL)])
         }
 
-        setSelectedOutputToken(selectedOutputTokenIndex)
+        setSelectedOutputTokenIndex(newSelectedOutputTokenIndex)
     }
 
     return (
@@ -113,7 +116,7 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
                     />
                     <DropDown css={`margin-left: 16px; min-width: 87px;`}
                               items={inputTokensSymbols}
-                              selected={selectedInputToken}
+                              selected={selectedInputTokenIndex}
                               onChange={selectedTokenIndex => updateSymbolsOnInputTokenSelection(selectedTokenIndex)}
                     />
                 </CombinedInput>
@@ -136,7 +139,7 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
                     />
                     <DropDown css={`margin-left: 16px; min-width: 87px;`}
                               items={outputTokensSymbols}
-                              selected={selectedOutputToken}
+                              selected={selectedOutputTokenIndex}
                               onChange={selectedTokenIndex => updateSymbolsOnOutputTokenSelection(selectedTokenIndex)}
                     />
                 </CombinedInput>

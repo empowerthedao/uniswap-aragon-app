@@ -28,7 +28,8 @@ contract Uniswap is AragonApp {
     event AppInitialized();
     event NewAgentSet();
     event NewUniswapFactorySet();
-    event EthToTokenSwapInput(address tokenReturned);
+    event EthToTokenSwapInput(address tokenTransferred);
+    event TokenToEthSwapInput(address tokenTransferred);
 
     /**
     * @notice Initialize the Uniswap App
@@ -100,10 +101,32 @@ contract Uniswap is AragonApp {
         require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 
         bytes memory encodedFunctionCall = abi.encodeWithSignature("ethToTokenSwapInput(uint256,uint256)", _minTokenAmount, _expiredAtTime);
+        agent.execute(exchangeAddress, _ethAmount, encodedFunctionCall);
 
         emit EthToTokenSwapInput(_token);
+    }
 
-        agent.execute(exchangeAddress, _ethAmount, encodedFunctionCall);
+    /**
+    * @notice Swap `@tokenAmount(_token, _tokenAmount, true, 18)` for at least `@tokenAmount(0x0000000000000000000000000000000000000000, _minEthAmount)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
+    * @param _token Address of the token to swap ETH for
+    * @param _tokenAmount Amount of tokens to exchange for Eth amount specified
+    * @param _minEthAmount Minimum amount of Eth to be exchanged for
+    * @param _expiredAtTime Time from which the transaction will be considered invalid
+    */
+    function tokenToEthSwapInput(address _token, uint256 _tokenAmount, uint256 _minEthAmount, uint256 _expiredAtTime)
+    external
+    auth(ETH_TOKEN_SWAP_ROLE)
+    {
+        address exchangeAddress = uniswapFactory.getExchange(_token);
+        require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
+
+        bytes memory approveFunctionCall = abi.encodeWithSignature("approve(address,uint256)", exchangeAddress, _tokenAmount);
+        agent.execute(_token, 0, approveFunctionCall);
+
+        bytes memory encodedFunctionCall = abi.encodeWithSignature("tokenToEthSwapInput(uint256,uint256,uint256)", _tokenAmount, _minEthAmount, _expiredAtTime);
+        agent.execute(exchangeAddress, 0, encodedFunctionCall);
+
+        emit TokenToEthSwapInput(_token);
     }
 
 }

@@ -52,7 +52,8 @@ async function ethToTokenSwapInput(api, inputToken, inputAmount, outputToken, ou
         api.ethToTokenSwapInput(outputToken.address, convertedInputAmount, convertedOutputAmount, deadline)
             .subscribe()
     } else if (inputToken.address !== ETHER_TOKEN_FAKE_ADDRESS && outputToken.address === ETHER_TOKEN_FAKE_ADDRESS) {
-
+        api.tokenToEthSwapInput(inputToken.address, convertedInputAmount, convertedOutputAmount, deadline)
+            .subscribe()
     }
 
 

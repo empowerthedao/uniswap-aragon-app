@@ -124,9 +124,10 @@ const onNewEvent = async (state, storeEvent) => {
                 balances: await agentBalances$(api, activeTokens(state)).toPromise()
             }
         case 'EthToTokenSwapInput':
+        case 'TokenToEthSwapInput':
             debugLog("ETH TO TOKEN SWAP INPUT")
-            const {tokenReturned} = eventParams
-            const activeTokensWithTokenReturned = newActiveTokens(state, tokenReturned)
+            const {tokenTransferred} = eventParams
+            const activeTokensWithTokenReturned = newActiveTokens(state, tokenTransferred)
             return {
                 ...state,
                 balances: await agentBalances$(api, activeTokensWithTokenReturned).toPromise(),

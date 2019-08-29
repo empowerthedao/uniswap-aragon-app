@@ -10,6 +10,11 @@ const setAgent = (api, address) => {
         .subscribe()
 }
 
+const setUniswapFactory = (api, address) => {
+    api.setUniswapFactory(address)
+        .subscribe()
+}
+
 const withdraw = (api, token, recipient, amount, decimals) => {
     const adjustedAmount = toDecimals(amount, decimals)
     api.transfer(token, recipient, adjustedAmount)
@@ -61,6 +66,7 @@ async function ethToTokenSwapInput(api, inputToken, inputAmount, outputToken, ou
 
 export {
     setAgent,
+    setUniswapFactory,
     withdraw,
     deposit,
     ethToTokenSwapInput

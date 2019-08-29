@@ -1,24 +1,14 @@
 import React from "react"
-import styled from "styled-components";
 import Balances from "../balances/Balances";
 
-const SpacedBlock = styled.div`
-  margin-top: 30px;
-  &:first-child {
-    margin-top: 0;
-  }
-`
-
+// TODO: Add table of successful swaps.
 const Swap = ({balances, handleTransfer, compactMode}) => {
 
     return (
         <>
-            <SpacedBlock>
-                <Balances compactMode={compactMode} balances={balances} handleTransfer={handleTransfer}/>
-            </SpacedBlock>
+            <Balances compactMode={compactMode} balances={balances} handleTransfer={handleTransfer}/>
         </>
     )
-
 }
 
 export default Swap

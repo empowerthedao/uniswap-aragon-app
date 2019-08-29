@@ -5,13 +5,14 @@ import {Button, IdentityBadge} from "@aragon/ui";
 
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-const Settings = ({handleNewAgent, settings, compactMode}) => {
-    let {agentAddress} = settings
+const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMode}) => {
+    let {agentAddress, uniswapFactoryAddress} = settings
 
     return (
         <SettingsContainer>
             <Option name="Agent Address"
-                    text="The contract that represents an EOA (Externally Owned Account) and acts on behalf of the Compound app. Only send funds to this address via the transfer process provided.">
+                    text="The contract that represents an EOA (Externally Owned Account) and acts on behalf of the
+                    Compound app. Only send funds to this address via the transfer process provided.">
                 <IdentityBadge
                     entity={agentAddress || ZERO_ADDRESS}
                     shorten={compactMode}
@@ -20,6 +21,21 @@ const Settings = ({handleNewAgent, settings, compactMode}) => {
                 <ButtonContainer>
                     <Button mode="outline" onClick={() => handleNewAgent()}>
                         Change Agent
+                    </Button>
+                </ButtonContainer>
+            </Option>
+
+            <Option name="Uniswap Factory Address"
+                    text="The contract that maintains the addresses of the individual Uniswap token exchanges. Never
+                    send funds to this address.">
+                <IdentityBadge
+                    entity={uniswapFactoryAddress || ZERO_ADDRESS}
+                    shorten={compactMode}
+                />
+
+                <ButtonContainer>
+                    <Button mode="outline" onClick={() => handleNewUniswapFactory()}>
+                        Change Uniswap Factory
                     </Button>
                 </ButtonContainer>
             </Option>

@@ -22,6 +22,10 @@ export function useSidePanel() {
         CHANGE_AGENT: {
             id: 'CHANGE_AGENT',
             title: 'Change the Agent'
+        },
+        CHANGE_UNISWAP_FACTORY: {
+            id: 'CHANGE_UNISWAP_FACTORY',
+            title: 'Change the Uniswap Factory'
         }
     }
 
@@ -49,7 +53,8 @@ export function useSidePanel() {
     const openPanelActions = {
         swap: () => requestOpen(sidePanels.SWAP),
         transfer: () => requestOpen(sidePanels.TRANSFER),
-        changeAgent: () => requestOpen(sidePanels.CHANGE_AGENT)
+        changeAgent: () => requestOpen(sidePanels.CHANGE_AGENT),
+        changeUniswapFactory: () => requestOpen(sidePanels.CHANGE_UNISWAP_FACTORY)
     }
 
     return { currentSidePanel, opened, visible, openPanelActions, requestOpen, endTransition, requestClose }

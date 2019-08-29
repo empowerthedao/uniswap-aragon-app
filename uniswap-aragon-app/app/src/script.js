@@ -105,7 +105,15 @@ const onNewEvent = async (state, storeEvent) => {
             debugLog("NEW AGENT SET")
             return {
                 ...state,
-                agentAddress: await agentAddress$(api).toPromise()
+                agentAddress: await agentAddress$(api).toPromise(),
+                balances: await agentBalances$(api, activeTokens(state)).toPromise()
+            }
+        case 'NewUniswapFactorySet':
+            debugLog("NEW UNISWAP FACTORY SET")
+            return {
+                ...state,
+                uniswapFactoryAddress: await uniswapFactoryAddress$(api).toPromise(),
+                uniswapTokens: await uniswapTokens$(api).toPromise()
             }
         case 'VaultTransfer':
         case 'VaultDeposit':

@@ -39,6 +39,7 @@ function App({compactMode}) {
             case 'SETTINGS':
                 return <Settings settings={settings}
                                  handleNewAgent={() => sidePanel.openPanelActions.changeAgent()}
+                                 handleNewUniswapFactory={() => sidePanel.openPanelActions.changeUniswapFactory()}
                                  compactMode={compactMode}/>
             default:
                 return <div/>
@@ -47,14 +48,6 @@ function App({compactMode}) {
 
     const currentSidePanel = () => {
         switch (sidePanel.currentSidePanel.id) {
-            case 'CHANGE_AGENT':
-                return <GenericInputPanel actionTitle={'Uniswap Action'}
-                                          actionDescription={`This action will change the Agent which represents an Externally
-                                        Owned Account (EOA) and is responsible for interacting with the Uniswap protocol.`}
-                                          inputFieldList={[
-                                              {id: 1, label: 'address', type: 'text'}]}
-                                          submitLabel={'Change agent'}
-                                          handleSubmit={actions.setAgentAddress}/>
             case 'TRANSFER':
                 return <TransferPanel tokens={tokens}
                                       opened={sidePanel.opened}
@@ -63,6 +56,22 @@ function App({compactMode}) {
             case 'SWAP':
                 return <SwapPanel swapPanelState={swapPanelState}
                                   handleSwap={actions.ethToTokenSwapInput}/>
+            case 'CHANGE_AGENT':
+                return <GenericInputPanel actionTitle={'Uniswap Action'}
+                                          actionDescription={`This action will change the Agent which represents an Externally
+                                        Owned Account (EOA) and is responsible for interacting with the Uniswap protocol.`}
+                                          inputFieldList={[
+                                              {id: 1, label: 'address', type: 'text'}]}
+                                          submitLabel={'Change agent'}
+                                          handleSubmit={actions.setAgentAddress}/>
+            case 'CHANGE_UNISWAP_FACTORY':
+                return <GenericInputPanel actionTitle={'Uniswap Action'}
+                                          actionDescription={`This action will change the Uniswap Factory which maintains
+                                           the addresses of the individual Uniswap token exchanges.`}
+                                          inputFieldList={[
+                                              {id: 1, label: 'address', type: 'text'}]}
+                                          submitLabel={'Change uniswap factory'}
+                                          handleSubmit={actions.setUniswapFactoryAddress}/>
             default:
                 return <div/>
         }

@@ -6,6 +6,7 @@ const SELECTOR_SYMBOL_INDEX = 0
 const SELECTOR_SYMBOL = "..."
 const ETH_SYMBOL = "ETH"
 
+// TODO: Move the state processing into hook
 const SwapPanel = ({swapPanelState, handleSwap}) => {
 
     const {uniswapTokens, getTokensEthExchangeRate} = swapPanelState
@@ -152,7 +153,7 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
 
                 <Info.Action title="Swap action">
                     This action will exchange the specified input amount of Ether or Tokens from the Uniswap app's Agent
-                    for at least the output value specified. The autofilled output amount is the Uniswap exchange's
+                    for at least the output amount specified. The autofilled output amount is the Uniswap exchange's
                     recommended amount reduced by 1% to account for price slippage.
                 </Info.Action>
             </DepositContainer>

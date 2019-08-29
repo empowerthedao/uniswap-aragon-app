@@ -1,4 +1,4 @@
-import {deposit, ethToTokenSwapInput, setAgent, withdraw} from "../web3/UniswapContract";
+import {deposit, ethToTokenSwapInput, setAgent, setUniswapFactory, withdraw} from "../web3/UniswapContract";
 import {useApi, useAppState} from "@aragon/api-react";
 import {useCallback} from 'react'
 import {useSidePanel} from "./side-panels";
@@ -10,6 +10,15 @@ const useSetAgentAddress = (onDone) => {
 
     return useCallback(address => {
         setAgent(api, address)
+        onDone()
+    }, [api, onDone])
+}
+
+const useSetUniswapFactoryAddress = (onDone)=> {
+    const api = useApi()
+
+    return useCallback(address => {
+        setUniswapFactory(api, address)
         onDone()
     }, [api, onDone])
 }
@@ -45,19 +54,20 @@ export function useAppLogic() {
     const {
         isSyncing,
         tokens,
-        appAddress,
         agentAddress,
-        balances
+        balances,
+        uniswapFactoryAddress
     } = useAppState()
 
     const swapPanelState = useSwapPanelState()
-    const settings = {appAddress, agentAddress}
+    const settings = {agentAddress, uniswapFactoryAddress}
 
     const sidePanel = useSidePanel()
     const tabs = useTabs()
 
     const actions = {
         setAgentAddress: useSetAgentAddress(sidePanel.requestClose),
+        setUniswapFactoryAddress: useSetUniswapFactoryAddress(sidePanel.requestClose),
         deposit: useDeposit(sidePanel.requestClose),
         withdraw: useWithdraw(sidePanel.requestClose),
         ethToTokenSwapInput: useEthToTokenSwapInput(sidePanel.requestClose)

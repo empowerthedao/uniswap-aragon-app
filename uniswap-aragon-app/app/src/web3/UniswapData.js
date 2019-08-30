@@ -1,6 +1,11 @@
-import {enabledTokensAddresses$, tokenContract$, uniswapFactory$} from "./ExternalContracts";
+import {
+    enabledTokensAddresses$,
+    tokenContract$,
+    uniswapExchangeAddressFromToken$,
+    uniswapFactory$
+} from "./ExternalContracts";
 import {range, zip} from "rxjs"
-import {mergeMap, tap, toArray, map, filter, concatMap} from "rxjs/operators";
+import {mergeMap, tap, toArray, map, concatMap} from "rxjs/operators";
 import {isTokenVerified$} from "./TokenVerification";
 import {onErrorReturnDefault} from "../lib/rx-error-operators";
 
@@ -12,27 +17,27 @@ const allUniswapTokensAddresses$ = api =>
         ))
     )
 
-
 const uniswapTokens$ = api => {
 
-    const uniswapToken = (address, decimals, name, symbol, verified) => ({
+    const uniswapToken = (address, decimals, name, symbol, verified, exchangeAddress) => ({
         address,
         decimals,
         name,
         symbol,
-        verified
+        verified,
+        exchangeAddress
     })
 
     return enabledTokensAddresses$(api).pipe(
-        tap(console.log),
         concatMap(address => address),
         mergeMap(tokenAddress => tokenContract$(api, tokenAddress).pipe(
-            mergeMap(token => zip(token.decimals(), token.name(), token.symbol(), isTokenVerified$(api, tokenAddress)).pipe(
-                map(([decimals, name, symbol, verified]) => uniswapToken(tokenAddress, decimals, name, symbol, verified))
+            mergeMap(token => zip(token.decimals(), token.name(), token.symbol(),
+                isTokenVerified$(api, tokenAddress), uniswapExchangeAddressFromToken$(api, tokenAddress)).pipe(
+                map(([decimals, name, symbol, verified, exchangeAddress]) => uniswapToken(tokenAddress, decimals, name, symbol, verified, exchangeAddress))
             ))
         )),
         toArray(),
-        onErrorReturnDefault(`uniswapTokens`, [uniswapToken("", 0, "", "", false)])
+        onErrorReturnDefault(`uniswapTokens`, [uniswapToken("", 0, "", "", false, "")])
     )
 }
 

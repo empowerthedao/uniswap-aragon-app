@@ -4,7 +4,7 @@ import ERC20Abi from '../abi/erc20-abi'
 import UniswapExchangeAbi from '../abi/uniswap-exchange-abi'
 import UniswapFactoryAbi from '../abi/uniswap-factory-abi'
 import {of} from 'rxjs'
-import {concatMap, map, mergeMap} from 'rxjs/operators'
+import {concatMap, map, mergeMap, toArray} from 'rxjs/operators'
 
 const agentAddress$ = api => api.call('agent')
 
@@ -24,11 +24,12 @@ const uniswapFactory$ = api =>
     uniswapFactoryAddress$(api).pipe(
         map(uniswapFactoryAddress => api.external(uniswapFactoryAddress, UniswapFactoryAbi)))
 
-const uniswapExchange$ = (api, exchangeAddress) => of(api.external(exchangeAddress, UniswapExchangeAbi))
+const uniswapExchangeAddressFromToken$ = (api, tokenAddress) =>
+    uniswapFactory$(api).pipe(
+        mergeMap(uniswapFactory => uniswapFactory.getExchange(tokenAddress)))
 
 const uniswapExchangeFromToken$ = (api, tokenAddress) =>
-    uniswapFactory$(api).pipe(
-        mergeMap(uniswapFactory => uniswapFactory.getExchange(tokenAddress)),
+    uniswapExchangeAddressFromToken$(api, tokenAddress).pipe(
         map(exchangeAddress => api.external(exchangeAddress, UniswapExchangeAbi)))
 
 const allEnabledTokensExchanges$ = api =>
@@ -45,6 +46,7 @@ export {
     agentApp$,
     tokenContract$,
     uniswapFactory$,
+    uniswapExchangeAddressFromToken$,
     uniswapExchangeFromToken$,
     allEnabledTokensExchanges$
 }

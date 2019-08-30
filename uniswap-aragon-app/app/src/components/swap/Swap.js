@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Balances from "../balances/Balances";
 
 // TODO: Add table of successful swaps.
-const Swap = ({balances, handleTransfer, compactMode}) => {
+const Swap = ({balances, swapState, handleTransfer, compactMode}) => {
 
     return (
         <SwapContainer>

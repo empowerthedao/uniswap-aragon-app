@@ -23,6 +23,7 @@ function App({compactMode}) {
         isSyncing,
         tokens,
         balances,
+        swapState,
         swapPanelState,
         settings,
         actions,
@@ -35,6 +36,7 @@ function App({compactMode}) {
             case 'SWAP':
                 return <Swap compactMode={compactMode}
                              balances={balances}
+                             swapState={swapState}
                              handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
             case 'SETTINGS':
                 return <Settings settings={settings}

@@ -1,7 +1,13 @@
 import '@babel/polyfill'
 import Aragon, {events} from '@aragon/api'
 import retryEvery from "./lib/retry-every"
-import {agentAddress$, agentApp$, uniswapFactoryAddress$} from "./web3/ExternalContracts";
+import {
+    agentAddress$,
+    agentApp$,
+    allEnabledTokensExchanges$,
+    enabledTokensAddresses$,
+    uniswapFactoryAddress$
+} from "./web3/ExternalContracts";
 import {agentInitializationBlock$, agentBalances$} from "./web3/AgentData";
 import {ETHER_TOKEN_FAKE_ADDRESS} from "./lib/shared-constants";
 import {uniswapTokens$} from "./web3/UniswapData";
@@ -38,7 +44,8 @@ async function initialize() {
             {
                 contract: await agentApp$(api).toPromise(),
                 initializationBlock: await agentInitializationBlock$(api).toPromise()
-            }
+            },
+            ...await allEnabledTokensExchanges$(api).toPromise()
 
         ]
     })
@@ -144,10 +151,17 @@ const onNewEvent = async (state, storeEvent) => {
             }
         case 'TokenPurchase':
             debugLog("TOKEN PURCHASE")
-            const {buyer, eth_sold, tokens_bought} = eventParams
-
+            const {eth_sold, tokens_bought} = eventParams
             return {
-                ...state
+                ...state,
+                tokenSwaps: await newTokenSwaps(state, storeEvent, "ETH_TO_TOKEN", eth_sold, tokens_bought)
+            }
+        case 'EthPurchase':
+            debugLog("ETH PURCHASE")
+            const {eth_bought, tokens_sold} = eventParams
+            return {
+                ...state,
+                tokenSwaps: await newTokenSwaps(state, storeEvent, "TOKEN_TO_ETH", tokens_sold, eth_bought)
             }
         default:
             return state
@@ -155,9 +169,28 @@ const onNewEvent = async (state, storeEvent) => {
 }
 
 const newActiveTokens = (state, newToken) => {
-    let newActiveTokens = [...state.activeTokens ? state.activeTokens : []]
+    const newActiveTokens = [...state.activeTokens || []]
     if (newToken !== ETHER_TOKEN_FAKE_ADDRESS) {
         newActiveTokens.push(newToken)
     }
     return [...new Set(newActiveTokens)]
+}
+
+const newTokenSwaps = async (state, storeEvent, type, input, output) => {
+    const {blockNumber, address} = storeEvent
+
+    const newTokenSwaps = [...state.tokenSwaps || []]
+
+    if (state.agentAddress === storeEvent.returnValues.buyer) {
+        const eventBlock = await api.web3Eth('getBlock', blockNumber).toPromise()
+        newTokenSwaps.push({
+            type: type,
+            input: input,
+            output: output,
+            timestamp: eventBlock.timestamp,
+            exchangeAddress: address
+        })
+    }
+
+    return newTokenSwaps
 }

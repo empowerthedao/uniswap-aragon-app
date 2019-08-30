@@ -39,6 +39,7 @@ async function initialize() {
                 contract: await agentApp$(api).toPromise(),
                 initializationBlock: await agentInitializationBlock$(api).toPromise()
             }
+
         ]
     })
 }
@@ -140,6 +141,13 @@ const onNewEvent = async (state, storeEvent) => {
                 ...state,
                 balances: await agentBalances$(api, activeTokensWithTokenReturned).toPromise(),
                 activeTokens: activeTokensWithTokenReturned
+            }
+        case 'TokenPurchase':
+            debugLog("TOKEN PURCHASE")
+            const {buyer, eth_sold, tokens_bought} = eventParams
+
+            return {
+                ...state
             }
         default:
             return state

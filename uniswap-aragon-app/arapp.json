@@ -7,7 +7,12 @@
     },
     {
       "name": "Set the uniswap factory address",
-      "id": "SET_UNISWAP_FACTORY",
+      "id": "SET_UNISWAP_FACTORY_ROLE",
+      "params": []
+    },
+    {
+      "name": "Set the enabled uniswap tokens",
+      "id": "SET_UNISWAP_TOKENS_ROLE",
       "params": []
     },
     {

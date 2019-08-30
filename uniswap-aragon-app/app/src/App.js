@@ -94,7 +94,7 @@ function App({compactMode}) {
                             `}
                         `}
                     >
-                        {compactMode ? <img src={SwapIcon} height="30px" alt=""/> : 'Swap Eth/Tokens'}
+                        {compactMode ? <img src={SwapIcon} height="30px" alt=""/> : 'Swap Eth / Tokens'}
                     </Button>
                 }
             />

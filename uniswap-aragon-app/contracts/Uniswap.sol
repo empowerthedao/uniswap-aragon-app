@@ -5,24 +5,32 @@ import "@aragon/apps-agent/contracts/Agent.sol";
 import "@aragon/os/contracts/common/SafeERC20.sol";
 import "@aragon/os/contracts/lib/token/ERC20.sol";
 import "./UniswapFactoryInterface.sol";
+import "./lib/AddressArrayUtils.sol";
 
 contract Uniswap is AragonApp {
 
     using SafeERC20 for ERC20;
+    using AddressArrayUtils for address[];
 
     bytes32 public constant SET_AGENT_ROLE = keccak256("SET_AGENT_ROLE");
-    bytes32 public constant SET_UNISWAP_FACTORY = keccak256("SET_UNISWAP_FACTORY");
+    bytes32 public constant SET_UNISWAP_FACTORY_ROLE = keccak256("SET_UNISWAP_FACTORY_ROLE");
+    bytes32 public constant SET_UNISWAP_TOKENS_ROLE = keccak256("SET_UNISWAP_TOKENS_ROLE");
     bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
     bytes32 public constant ETH_TOKEN_SWAP_ROLE = keccak256("ETH_TOKEN_SWAP_ROLE");
 
+    string private constant ERROR_TOO_MANY_TOKENS = "UNISWAP_TOO_MANY_TOKENS";
     string private constant ERROR_VALUE_MISMATCH = "UNISWAP_VALUE_MISMATCH";
     string private constant ERROR_SEND_REVERTED = "UNISWAP_SEND_REVERTED";
     string private constant ERROR_TOKEN_TRANSFER_FROM_REVERTED = "UNISWAP_TOKEN_TRANSFER_FROM_REVERTED";
+    string private constant ERROR_TOKEN_NOT_ENABLED = "UNISWAP_TOKEN_NOT_ENABLED";
     string private constant ERROR_TOKEN_APPROVE_REVERTED = "UNISWAP_TOKEN_APPROVE_REVERTED";
     string private constant ERROR_NO_EXCHANGE_FOR_TOKEN = "UNISWAP_NO_EXCHANGE_FOR_TOKEN";
 
     Agent public agent;
     UniswapFactoryInterface public uniswapFactory;
+
+    uint256 private constant MAX_ENABLED_TOKENS = 100;
+    address[] public enabledTokens;
 
     event AppInitialized();
     event NewAgentSet();
@@ -34,10 +42,15 @@ contract Uniswap is AragonApp {
     * @notice Initialize the Uniswap App
     * @param _agent The Agent contract address
     */
-    function initialize(address _agent, address _uniswapFactory) external onlyInit {
-        initialized();
+    function initialize(address _agent, address _uniswapFactory, address[] _enabledTokens) external onlyInit {
+        require(_enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
+
         agent = Agent(_agent);
         uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
+        enabledTokens = _enabledTokens;
+
+        initialized();
+
         emit AppInitialized();
     }
 
@@ -51,10 +64,34 @@ contract Uniswap is AragonApp {
     }
 
     /**
+    * @notice Enable the Uniswap exchange for token `_token`
+    * @param _token Token to enable
+    */
+    function enableToken(address _token) public auth(SET_UNISWAP_TOKENS_ROLE) {
+        address exchangeAddress = uniswapFactory.getExchange(_token);
+        require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
+
+        enabledTokens.push(_token);
+        require(enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
+    }
+
+    /**
+    * @notice Disable the Uniswap exchange for token `_token`
+    * @param _token Token to disable
+    */
+    function disableToken(address _token) public auth(SET_UNISWAP_TOKENS_ROLE) {
+        enabledTokens.deleteItem(_token);
+    }
+
+    function getEnabledTokens() public view returns (address[]) {
+        return enabledTokens;
+    }
+
+    /**
     * @notice Update the Uniswap Factory address to `_uniswapFactory`
     * @param _uniswapFactory New Uniswap Factory address
     */
-    function setUniswapFactory(address _uniswapFactory) external auth(SET_UNISWAP_FACTORY) {
+    function setUniswapFactory(address _uniswapFactory) external auth(SET_UNISWAP_FACTORY_ROLE) {
         uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
         emit NewUniswapFactorySet();
     }
@@ -96,6 +133,8 @@ contract Uniswap is AragonApp {
     external
     auth(ETH_TOKEN_SWAP_ROLE)
     {
+        require(enabledTokens.contains(_token), ERROR_TOKEN_NOT_ENABLED);
+
         address exchangeAddress = uniswapFactory.getExchange(_token);
         require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 
@@ -116,6 +155,8 @@ contract Uniswap is AragonApp {
     external
     auth(ETH_TOKEN_SWAP_ROLE)
     {
+        require(enabledTokens.contains(_token), ERROR_TOKEN_NOT_ENABLED);
+
         address exchangeAddress = uniswapFactory.getExchange(_token);
         require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 

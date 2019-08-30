@@ -55,6 +55,7 @@ contract TemplateBase is APMNamehash {
 contract Template is TemplateBase {
     MiniMeTokenFactory tokenFactory;
     address uniswapFactory;
+    address[] enabledTokens;
 
     uint64 constant PCT = 10 ** 16;
     address constant ANY_ENTITY = address(-1);
@@ -62,6 +63,9 @@ contract Template is TemplateBase {
     constructor(ENS ens, address _uniswapFactory) TemplateBase(DAOFactory(0), ens) public {
         tokenFactory = new MiniMeTokenFactory();
         uniswapFactory = _uniswapFactory;
+
+        enabledTokens.push(address(0xFE176683c14b745Fe1D616042633674e81699b7e));
+        enabledTokens.push(address(0xc07Dfa3Fc8a42417279870CDD602C8D421c782a8));
     }
 
     function newInstance() public {
@@ -84,14 +88,16 @@ contract Template is TemplateBase {
         token.changeController(tokenManager);
 
         // Initialize apps
-        app.initialize(address(agent), uniswapFactory);
+        app.initialize(address(agent), uniswapFactory, enabledTokens);
+
         tokenManager.initialize(token, true, 0);
         voting.initialize(token, 50 * PCT, 20 * PCT, 1 days);
         agent.initialize();
 
         // Create apps permissions
         acl.createPermission(ANY_ENTITY, app, app.SET_AGENT_ROLE(), root);
-        acl.createPermission(ANY_ENTITY, app, app.SET_UNISWAP_FACTORY(), root);
+        acl.createPermission(ANY_ENTITY, app, app.SET_UNISWAP_FACTORY_ROLE(), root);
+        acl.createPermission(ANY_ENTITY, app, app.SET_UNISWAP_TOKENS_ROLE(), root);
         acl.createPermission(ANY_ENTITY, app, app.TRANSFER_ROLE(), root);
         acl.createPermission(ANY_ENTITY, app, app.ETH_TOKEN_SWAP_ROLE(), root);
 

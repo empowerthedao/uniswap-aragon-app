@@ -182,12 +182,12 @@ const newTokenSwaps = async (state, storeEvent, type, input, output) => {
     const newTokenSwaps = [...state.tokenSwaps || []]
 
     if (state.agentAddress === storeEvent.returnValues.buyer) {
-        const eventBlock = await api.web3Eth('getBlock', blockNumber).toPromise()
+        const { timestamp: blockTimestamp } = await api.web3Eth('getBlock', blockNumber).toPromise()
         newTokenSwaps.push({
             type: type,
             input: input,
             output: output,
-            timestamp: eventBlock.timestamp,
+            timestamp: blockTimestamp,
             exchangeAddress: address
         })
     }

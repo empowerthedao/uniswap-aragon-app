@@ -1,40 +1,38 @@
-import {useApi, useAppState} from "@aragon/api-react";
-import {fromDecimals} from "../lib/math-utils";
+import {useAppState} from "@aragon/api-react";
 import {ETH_DECIMALS} from "../lib/shared-constants";
+import {formatTokenAmount} from "../lib/format-utils";
+import {format} from 'date-fns'
 
 export function useSwapState() {
 
-    const api = useApi()
-    const { tokenSwaps, uniswapTokens } = useAppState()
+    const {tokenSwaps, uniswapTokens} = useAppState()
 
-    console.log("Token Swaps", tokenSwaps)
-    console.log("Uniswap Tokens", uniswapTokens)
-    // {
-    //     type: type,
-    //     input: input,
-    //     output: output,
-    //     timestamp: eventBlock.timestamp,
-    //     exchangeAddress: address
-    // }
+    const mappedTokenSwaps = (tokenSwaps || [])
+        .map(tokenSwap => {
+            const {type, input, output, timestamp, exchangeAddress} = tokenSwap
+            let mappedInput, mappedOutput
 
-    const mappedTokenSwaps = (tokenSwaps || []).map(tokenSwap => {
-        const { type, input, output, exchangeAddress } = tokenSwap
-        let mappedInput, mappedOutput
+            const exchangeToken = uniswapTokens.find(uniswapToken => uniswapToken.exchangeAddress === exchangeAddress) || {}
 
+            const formattedEthAmount = (value, incoming) => formatTokenAmount(value, incoming, ETH_DECIMALS, true, {rounding: 6})
+            const formattedTokenAmount = (value, incoming) => formatTokenAmount(value, incoming, exchangeToken.decimals, true, {rounding: 6})
 
+            if (type === "ETH_TO_TOKEN") {
+                mappedInput = `${formattedEthAmount(input, false)} ETH`
+                mappedOutput = `${formattedTokenAmount(output, true)} ${exchangeToken.symbol}`
+            } else if (type === "TOKEN_TO_ETH") {
+                mappedInput = `${formattedTokenAmount(input, false)} ${exchangeToken.symbol}`
+                mappedOutput = `${formattedEthAmount(output, true)} ETH`
+            }
 
-        if (type === "ETH_TO_TOKEN") {
-            mappedInput = fromDecimals(input, ETH_DECIMALS)
-        } else if (type === "TOKEN_TO_ETH") {
-            mappedOutput = fromDecimals(output, ETH_DECIMALS)
-        }
+            const mappedTimestamp = format(timestamp * 1000, 'MMMM do, h:mma')
 
-        return {
-            ...tokenSwap,
-            input: mappedInput,
-            output: mappedOutput
-        }
-    })
+            return {
+                ...tokenSwap,
+                dataViewFormat: [mappedInput, mappedOutput, mappedTimestamp]
+            }
+        })
+        .sort((x, y) => y.timestamp - x.timestamp)
 
 
     return {

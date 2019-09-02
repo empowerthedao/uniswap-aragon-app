@@ -19,6 +19,7 @@ contract Uniswap is AragonApp {
     bytes32 public constant ETH_TOKEN_SWAP_ROLE = keccak256("ETH_TOKEN_SWAP_ROLE");
 
     string private constant ERROR_TOO_MANY_TOKENS = "UNISWAP_TOO_MANY_TOKENS";
+    string private constant ERROR_CAN_NOT_DELETE_TOKEN = "UNISWAP_CAN_NOT_DELETE_TOKEN";
     string private constant ERROR_VALUE_MISMATCH = "UNISWAP_VALUE_MISMATCH";
     string private constant ERROR_SEND_REVERTED = "UNISWAP_SEND_REVERTED";
     string private constant ERROR_TOKEN_TRANSFER_FROM_REVERTED = "UNISWAP_TOKEN_TRANSFER_FROM_REVERTED";
@@ -68,11 +69,11 @@ contract Uniswap is AragonApp {
     * @param _token Token to enable
     */
     function enableToken(address _token) public auth(SET_UNISWAP_TOKENS_ROLE) {
+        require(enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
         address exchangeAddress = uniswapFactory.getExchange(_token);
         require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 
         enabledTokens.push(_token);
-        require(enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
     }
 
     /**
@@ -80,7 +81,7 @@ contract Uniswap is AragonApp {
     * @param _token Token to disable
     */
     function disableToken(address _token) public auth(SET_UNISWAP_TOKENS_ROLE) {
-        enabledTokens.deleteItem(_token);
+        require(enabledTokens.deleteItem(_token), ERROR_CAN_NOT_DELETE_TOKEN);
     }
 
     function getEnabledTokens() public view returns (address[]) {

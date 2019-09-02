@@ -5,7 +5,6 @@ import {Box, DataView, Text, theme} from "@aragon/ui";
 
 const PAGINATION = 10
 
-// TODO: Add table of successful swaps.
 const Swap = ({balances, swapState, handleTransfer, compactMode}) => {
 
     const {tokenSwaps} = swapState

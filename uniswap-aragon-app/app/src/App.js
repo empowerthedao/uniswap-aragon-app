@@ -16,7 +16,6 @@ import PropTypes from 'prop-types';
 import Swap from "./components/swap/Swap";
 import SwapPanel from "./components/swap/side-panel-input/SwapPanel";
 
-// TODO: Add link to Uniswap website?
 function App({compactMode}) {
 
     const {

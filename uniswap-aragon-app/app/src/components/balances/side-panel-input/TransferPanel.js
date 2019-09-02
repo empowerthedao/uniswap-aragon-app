@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react'
 import styled from 'styled-components'
-import {TabBar} from '@aragon/ui'
+import {Tabs} from '@aragon/ui'
 
 import Deposit from './Deposit'
 import Withdraw from './Withdraw'
@@ -18,7 +18,7 @@ const TransferPanel = ({tokens, handleDeposit, handleWithdraw, opened}) => {
     return (
         <div>
             <TabBarWrapper>
-                <TabBar
+                <Tabs
                     items={['Deposit', 'Withdraw']}
                     selected={screenIndex}
                     onChange={setScreenIndex}

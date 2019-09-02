@@ -71,7 +71,7 @@ const WithdrawContainer = styled.div`
     flex-direction: column;
 `
 const FieldStyled = styled(Field)`
-    margin-bottom: 19px;
+    margin-bottom: 23px;
 `
 const ButtonStyled = styled(Button)`
     margin-top: 10px;

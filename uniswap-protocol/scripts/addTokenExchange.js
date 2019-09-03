@@ -10,11 +10,14 @@ const EXCHANGE_LIQUIDITY = valueWithDecimals(3000)
 const NEW_TOKEN_NAME = "Basic Attention Token"
 const NEW_TOKEN_SYMBOL = "BAT"
 
+// const UNISWAP_FACTORY_ADDRESS = UniswapFactory.address
+const UNISWAP_FACTORY_ADDRESS = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
+
 module.exports = async () => {
 
     try {
 
-        const uniswapFactory = await UniswapFactory.at(UniswapFactory.address)
+        const uniswapFactory = await UniswapFactory.at(UNISWAP_FACTORY_ADDRESS)
         const newErc20 = await CustomERC20.new(NEW_TOKEN_NAME, NEW_TOKEN_SYMBOL)
         console.log(`New ERC20 ${NEW_TOKEN_NAME}: ${newErc20.address}`)
 

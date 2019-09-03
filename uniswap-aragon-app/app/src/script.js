@@ -104,7 +104,7 @@ const onNewEvent = async (state, storeEvent) => {
             }
         case 'AppInitialized':
             debugLog("APP CONSTRUCTOR EVENT")
-            api.identify(`Agent App: ${eventAddress}`)
+            api.identify(eventAddress)
             return {
                 ...state,
                 appAddress: eventAddress

@@ -45,6 +45,7 @@ const providerForNetwork = network => () => {
 
     return new HDWalletProviderPrivkey(keys, rpc)
 }
+
 module.exports = {
     networks: {
         development: {

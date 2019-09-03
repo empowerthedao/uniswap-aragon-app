@@ -64,8 +64,8 @@ contract Template is TemplateBase {
         tokenFactory = new MiniMeTokenFactory();
         uniswapFactory = _uniswapFactory;
 
-        enabledTokens.push(address(0xFE176683c14b745Fe1D616042633674e81699b7e));
-        enabledTokens.push(address(0xc07Dfa3Fc8a42417279870CDD602C8D421c782a8));
+        enabledTokens.push(address(0x9310dC480CbF907D6A3c41eF2e33B09E61605531));
+        enabledTokens.push(address(0xC56a94cB177B297A9f4fe11781CE4E2eD1829f8B));
     }
 
     function newInstance() public {
@@ -108,6 +108,7 @@ contract Template is TemplateBase {
         acl.createPermission(ANY_ENTITY, voting, voting.CREATE_VOTES_ROLE(), root);
 
         acl.createPermission(address(app), agent, agent.EXECUTE_ROLE(), root);
+        acl.createPermission(address(app), agent, agent.SAFE_EXECUTE_ROLE(), root);
         acl.createPermission(address(app), agent, agent.RUN_SCRIPT_ROLE(), root);
         acl.createPermission(address(app), agent, agent.TRANSFER_ROLE(), root);
 

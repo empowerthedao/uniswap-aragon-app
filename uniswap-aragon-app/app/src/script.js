@@ -5,7 +5,6 @@ import {
     agentAddress$,
     agentApp$,
     allEnabledTokensExchanges$,
-    enabledTokensAddresses$,
     uniswapFactoryAddress$
 } from "./web3/ExternalContracts";
 import {agentInitializationBlock$, agentBalances$} from "./web3/AgentData";

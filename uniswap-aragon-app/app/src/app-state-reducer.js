@@ -13,24 +13,22 @@ const compareBalancesByEthAndSymbol = (tokenA, tokenB) => {
 
 const reducer = state => {
 
-    const {balances} = state || {}
+    const {balances, uniswapTokens} = state || {}
 
-    const convertedBalances = balances
-        ? balances
-            .map(balance => ({
-                ...balance,
-                amount: new BN(balance.amount),
-                decimals: new BN(balance.decimals),
+    const convertedBalances = (balances || [])
+        .map(balance => ({
+            ...balance,
+            amount: new BN(balance.amount),
+            decimals: new BN(balance.decimals),
 
-                // Note that numbers in `numData` are not safe for accurate
-                // computations (but are useful for making divisions easier).
-                numData: {
-                    amount: parseInt(balance.amount, 10),
-                    decimals: parseInt(balance.decimals, 10),
-                },
-            }))
-            .sort(compareBalancesByEthAndSymbol)
-        : []
+            // Note that numbers in `numData` are not safe for accurate
+            // computations (but are useful for making divisions easier).
+            numData: {
+                amount: parseInt(balance.amount, 10),
+                decimals: parseInt(balance.decimals, 10),
+            },
+        }))
+        .sort(compareBalancesByEthAndSymbol)
 
     const tokens = convertedBalances.map(
         ({address, name, symbol, numData: {amount, decimals}, verified}) => ({
@@ -43,13 +41,25 @@ const reducer = state => {
         })
     )
 
+    const uniswapTokenInTokens = uniswapToken => tokens.find(token => token.address === uniswapToken.address)
+
+    const mappedUniswapTokens = (uniswapTokens || [])
+        .filter(uniswapToken => !uniswapTokenInTokens(uniswapToken))
+        .map(({address, name, symbol, decimals, verified}) => ({
+            address,
+            decimals,
+            name,
+            symbol,
+            verified,
+        }))
+
     const tokensWithValue = convertedBalances.filter(balance => !balance.amount.isZero())
 
     return {
         ...state,
         // balances: convertedBalances,
         balances: convertedBalances.filter(balance => !balance.amount.isZero() || (balance.symbol === 'ETH' && tokensWithValue.length === 0)),
-        tokens
+        tokens: [...tokens, ...mappedUniswapTokens]
     }
 }
 

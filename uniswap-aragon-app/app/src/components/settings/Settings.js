@@ -59,7 +59,8 @@ const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMod
              flex-basis: 0;
              flex-grow: 1; 
              margin: 0px 10px;
-             ${compactMode && "width: 100%;"}
+           
+             ${compactMode && "width: 100%; padding-right: 20px;"}
              `}>
                 <Box heading={"Uniswap Factory Address"} css={`flex-basis: 50%;`}>
                     <div css={`display: flex; flex-direction: column;`}>

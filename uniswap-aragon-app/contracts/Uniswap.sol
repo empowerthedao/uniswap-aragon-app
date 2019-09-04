@@ -58,6 +58,11 @@ contract Uniswap is AragonApp {
         uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
         enabledTokens = _enabledTokens;
 
+        for (uint256 enabledTokenIndex = 0; enabledTokenIndex < _enabledTokens.length; enabledTokenIndex++) {
+            address exchangeAddress = uniswapFactory.getExchange(_enabledTokens[enabledTokenIndex]);
+            require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
+        }
+
         initialized();
 
         emit AppInitialized();

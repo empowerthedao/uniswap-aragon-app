@@ -64,11 +64,11 @@ dao apps <DAO-Address> --all --environment aragon:rinkeby
 ### Install the Uniswap Aragon App
 
 ```
-dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-Proxy-Address> <ARGS?> --environment aragon:rinkeby
+dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-Proxy-Address> <Uniswap-Factory-Address> ["'<Token-App-Address>'"] --environment aragon:rinkeby
 dao apps <DAO-Address> --all --environment aragon:rinkeby
 ```
 
-> This returns  the `Proxy address` for an app named `hash of app image???` as the `<Uniswap-App-Proxy-Address>` for use in future commands.
+> This returns  the `Proxy address` for an app named `0x6462a4eaf83a2a0ee0a82364882720a4a46a47ffb33daf1ea6ab2a7f88e192c9` as the `<Uniswap-App-Proxy-Address>` for use in future commands.
 
 ### Set the Agent App's permissions
 
@@ -76,9 +76,17 @@ In order for the Uniswap Aragon App to transact via the Agent, the following com
 
 ```
 dao acl create <DAO-Address> <Agent-App-Proxy-Address> EXECUTE_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Agent-App-Proxy-Address> SAFE_EXECUTE_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 dao acl create <DAO-Address> <Agent-App-Proxy-Address> RUN_SCRIPT_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Agent-App-Proxy-Address> TRANSFER_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 ```
 
-### Set the Uniswap Aragon App's permissions as recommended
+### Set the Uniswap Aragon App's permissions
 
-Complete this script by setting the permissions as per [recommended set of permissions for configuration of the Uniswap Aragon DAO](https://github.com/empowerthedao/uniswap-aragon-app/new/master/uniswap-aragon-app/recommended-permissions.md).
+```
+dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> ETH_TOKEN_SWAP_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> TRANSFER_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> SET_UNISWAP_TOKENS_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> SET_UNISWAP_FACTORY_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> SET_AGENT_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+```

@@ -28,21 +28,19 @@ dao token new "UniswapDAOToken" "USDAO" 0 --environment aragon:rinkeby
 
 ```
 dao install <DAO-Address> token-manager --app-init none --environment aragon:rinkeby
-dao apps <DAO-Address> --all --environment aragon:rinkeby
 ```
 
-> This returns the `<Token-Manager-Proxy-Address>` for use in future commands.
+> This returns `Installed token-manager at: <Token-Manager-Proxy-Address>` for use in future commands.
 
 ```
 dao token change-controller <DAO-Token-Address> <Token-Manager-Proxy-Address> --environment aragon:rinkeby
 dao acl create <DAO-Address> <Token-Manager-Proxy-Address> MINT_ROLE <Your-AragonCLI-Address> <Your-AragonCLI-Address> --environment aragon:rinkeby
 dao exec <DAO-Address> <Token-Manager-Proxy-Address> initialize <DAO-Token-Address> true 0 --environment aragon:rinkeby
 dao exec <DAO-Address> <Token-Manager-Proxy-Address> mint <Your-AragonCLI-Address> 1 --environment aragon:rinkeby
-dao install <DAO-Address> voting --app-init-args <DAO-Token-Address> 500000000000000000 250000000000000000 86400 --environment aragon:rinkeby
-dao apps <DAO-Address> --all --environment aragon:rinkeby
+dao install <DAO-Address> voting --app-init-args <DAO-Token-Address> 500000000000000000 500000000000000000 86400 --environment aragon:rinkeby
 ```
 
-> This returns `<Voting-App-Proxy-Address>` for use in future commands.
+> This returns `Installed voting at: <Voting-App-Proxy-Address>` for use in future commands.
 
 ```
 dao acl create <DAO-Address> <Voting-App-Proxy-Address> CREATE_VOTES_ROLE <Token-Manager-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
@@ -56,19 +54,21 @@ The Agent App is an application which acts on behalf of the DAO. The Uniswap Ara
 
 ```
 dao install <DAO-Address> agent --environment aragon:rinkeby
-dao apps <DAO-Address> --all --environment aragon:rinkeby
 ```
 
-> This returns the `Proxy address` for an app named `0x9ac98dc5f995bf0211ed589ef022719d1487e5cb2bab505676f0d084c07cf89a` as the `<Agent-App-Proxy-Address>` for use in future commands.
+> This returns `Installed agent at: <Agent-App-Proxy-Address>` for use in future commands.
 
 ### Install the Uniswap Aragon App
 
 ```
 dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-Proxy-Address> <Uniswap-Factory-Address> ["'<Token-App-Address>'"] --environment aragon:rinkeby
-dao apps <DAO-Address> --all --environment aragon:rinkeby
 ```
 
-> This returns  the `Proxy address` for an app named `0x6462a4eaf83a2a0ee0a82364882720a4a46a47ffb33daf1ea6ab2a7f88e192c9` as the `<Uniswap-App-Proxy-Address>` for use in future commands.
+> For `<Uniswap-Factory-Address>`, you can use `0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36` on Rinkeby, as defined in [Uniswap's documentation](https://docs.uniswap.io/frontend-integration/connect-to-uniswap).
+
+> For `<Token-App-Address>`, you can use `0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa` which is a [token tracker for DAI](https://rinkeby.etherscan.io/address/0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea) used by Uniswap's implementation on Rinkeby. Please note the use of ' and " in this command.
+
+> This returns `Installed uniswap.open.aragonpm.eth at: <Uniswap-App-Proxy-Address>` for use in future commands.
 
 ### Set the Agent App's permissions
 

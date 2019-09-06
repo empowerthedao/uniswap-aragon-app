@@ -123,6 +123,6 @@ You can now visit the DAO's Home page at https://rinkeby.aragon.org/#/<DAO-Addre
 
 ![Screenshot from 2019-09-06 18-54-24](https://user-images.githubusercontent.com/2212651/64445942-e6309380-d0d7-11e9-83ae-fb6118cf3dce.png)
 
-You can also view the Uniswap App at https://rinkeby.aragon.org/#/<DAO-Address>
+You can also view the Uniswap App at https://rinkeby.aragon.org/#/<DAO-Address>/<Uniswap-App-Proxy-Address>
 
 ![Screenshot from 2019-09-06 18-53-06](https://user-images.githubusercontent.com/2212651/64445976-f5174600-d0d7-11e9-90d8-84b21b7bedc3.png)

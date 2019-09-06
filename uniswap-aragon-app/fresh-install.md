@@ -24,7 +24,7 @@ dao new --environment aragon:rinkeby
 ```
 
 > This returns `Created DAO: <DAO-Address>` for use in future commands.
-https://rinkeby.aragon.org/#/0x4BB6B52a73073285F32f68C177ea3ec3bcD57194/0xF1ca82B71d0cdE2DaD84e4A73Ab9C090669664c7
+
 ### Create a Voting token
 
 Run the following command to **create the voting token**:

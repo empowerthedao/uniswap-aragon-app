@@ -87,12 +87,12 @@ You have now created a new Aragon DAO on Rinkeby with voting token and base apps
 Run the following command to **install the Uniswap app in the DAO**:
 
 ```
-dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-Proxy-Address> <Uniswap-Factory-Address> ["'<Token-App-Address>'"] --environment aragon:rinkeby
+dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-Proxy-Address> <Uniswap-Factory-Address> ["'<Swap-Token-Address>'"] --environment aragon:rinkeby
 ```
 
 > For `<Uniswap-Factory-Address>`, you can use `0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36` on Rinkeby, as defined in [Uniswap's documentation](https://docs.uniswap.io/frontend-integration/connect-to-uniswap).
 
-> For `<Token-App-Address>`, you can use `0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa` which is a [token tracker for DAI](https://rinkeby.etherscan.io/address/0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea) used by Uniswap's implementation on Rinkeby. Please note the use of ' and " in this command.
+> For `<Swap-Token-Address>`, you can use `0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa` which is a [token tracker for DAI](https://rinkeby.etherscan.io/address/0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea) used by Uniswap's implementation on Rinkeby. Please note the use of `'` and `"` in this command.
 
 > This returns `Installed uniswap.open.aragonpm.eth at: <Uniswap-App-Proxy-Address>` for use in future commands.
 

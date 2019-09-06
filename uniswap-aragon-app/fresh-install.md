@@ -24,7 +24,7 @@ dao new --environment aragon:rinkeby
 ```
 
 > This returns `Created DAO: <DAO-Address>` for use in future commands.
-
+https://rinkeby.aragon.org/#/0x4BB6B52a73073285F32f68C177ea3ec3bcD57194/0xF1ca82B71d0cdE2DaD84e4A73Ab9C090669664c7
 ### Create a Voting token
 
 Run the following command to **create the voting token**:
@@ -119,10 +119,10 @@ dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> SET_UNISWAP_FACTORY_ROL
 dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> SET_AGENT_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 ```
 
-You can now visit the DAO's Home page at https://rinkeby.aragon.org/#/<DAO-Address>
+You can now visit the DAO's Home page at `https://rinkeby.aragon.org/#/<DAO-Address>`
 
 ![Screenshot from 2019-09-06 18-54-24](https://user-images.githubusercontent.com/2212651/64445942-e6309380-d0d7-11e9-83ae-fb6118cf3dce.png)
 
-You can also view the Uniswap App at https://rinkeby.aragon.org/#/<DAO-Address>/<Uniswap-App-Proxy-Address>
+You can also view the Uniswap App at `https://rinkeby.aragon.org/#/<DAO-Address>/<Uniswap-App-Proxy-Address>`
 
 ![Screenshot from 2019-09-06 18-53-06](https://user-images.githubusercontent.com/2212651/64445976-f5174600-d0d7-11e9-90d8-84b21b7bedc3.png)

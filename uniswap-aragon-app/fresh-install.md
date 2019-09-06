@@ -1,18 +1,21 @@
 This script will use aragonCLI to:
 
-- Create a new Aragon DAO on Rinkeby with voting token and basic apps
-- Install the Uniswap Aragon App
-- Set the Uniswap Aragon App's permissions as recommended
+- Create a new Aragon DAO on Rinkeby
+- Install and configure the Uniswap Aragon App
 
-You must be running `aragon ipfs` in another window.
+This new DAO will be able to swap ETH with Tokens using Uniswap.
 
-The following parameter is required to start this:
+### Pre-requisites
 
-- `<Your-AragonCLI-Address>` = the address for the private key being used by your aragonCLI to sign transactions.
+The following are required for completing this script:
+
+- `aragonCLI` must be installed in your environment. Here is a [link to an introduction to aragonCLI](https://hack.aragon.org/docs/cli-intro.html).
+
+- You must know your `<AragonCLI-Address>`, which is the address for the private key being used by your aragonCLI to sign transactions.
 
 **During this script, new addresses will be created which will be required for further commands.**
 
-### Create a new Aragon DAO on Rinkeby with voting token and base apps
+### Create a new Aragon DAO on Rinkeby
 
 Run the following command to **create a new DAO**:
 
@@ -22,6 +25,8 @@ dao new --environment aragon:rinkeby
 
 > This returns `Created DAO: <DAO-Address>` for use in future commands.
 
+### Create a Voting token
+
 Run the following command to **create the voting token**:
 
 ```
@@ -29,6 +34,8 @@ dao token new "UniswapDAOToken" "USDAO" 0 --environment aragon:rinkeby
 ```
 
 > This returns `Successfully deployed the token at <DAO-Token-Address>` for use in future commands.
+
+### Install and configure the Tokens app in the DAO
 
 Run the following command to **install the Tokens app in the DAO**:
 
@@ -42,10 +49,12 @@ Run the following commands to **configure the voting token and configure the Tok
 
 ```
 dao token change-controller <DAO-Token-Address> <Token-Manager-Proxy-Address> --environment aragon:rinkeby
-dao acl create <DAO-Address> <Token-Manager-Proxy-Address> MINT_ROLE <Your-AragonCLI-Address> <Your-AragonCLI-Address> --environment aragon:rinkeby
+dao acl create <DAO-Address> <Token-Manager-Proxy-Address> MINT_ROLE <AragonCLI-Address> <AragonCLI-Address> --environment aragon:rinkeby
 dao exec <DAO-Address> <Token-Manager-Proxy-Address> initialize <DAO-Token-Address> true 0 --environment aragon:rinkeby
-dao exec <DAO-Address> <Token-Manager-Proxy-Address> mint <Your-AragonCLI-Address> 1 --environment aragon:rinkeby
+dao exec <DAO-Address> <Token-Manager-Proxy-Address> mint <AragonCLI-Address> 1 --environment aragon:rinkeby
 ```
+
+### Install and configure the Voting app in the DAO
 
 Run the following command to **install the Voting app in the DAO and initialize it**:
 
@@ -60,6 +69,8 @@ Run the following command to **configure the Voting app**:
 ```
 dao acl create <DAO-Address> <Voting-App-Proxy-Address> CREATE_VOTES_ROLE <Token-Manager-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 ```
+
+### Install the Agent app in the DAO
 
 Run the following command to **install the Agent app in the DAO**:
 
@@ -85,7 +96,7 @@ dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-P
 
 > This returns `Installed uniswap.open.aragonpm.eth at: <Uniswap-App-Proxy-Address>` for use in future commands.
 
-### Set the Agent App's permissions
+### Configure the Agent app
 
 In order for the Uniswap Aragon App to transact via the Agent, the following commands need to be run, to set the permissions on the Agent app:
 
@@ -96,7 +107,9 @@ dao acl create <DAO-Address> <Agent-App-Proxy-Address> RUN_SCRIPT_ROLE <Uniswap-
 dao acl create <DAO-Address> <Agent-App-Proxy-Address> TRANSFER_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 ```
 
-### Set the Uniswap Aragon App's permissions
+### Configure the Uniswap Aragon App
+
+In order for all operations by Uniswap Aragon App to be governed by a vote, the following commands need to be run:
 
 ```
 dao acl create <DAO-Address> <Uniswap-App-Proxy-Address> ETH_TOKEN_SWAP_ROLE <Voting-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby

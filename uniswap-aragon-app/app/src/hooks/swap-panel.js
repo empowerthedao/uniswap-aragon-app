@@ -12,6 +12,7 @@ const useGetTokensEthExchangeRate = () => {
     return useCallback((inputToken, inputAmount, outputToken, exchangeRateCallback) => {
 
         if (inputAmount === "" || parseFloat(inputAmount) === 0 || !inputToken || !outputToken) {
+            exchangeRateCallback("")
             return
         }
 

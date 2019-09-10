@@ -105,7 +105,7 @@ class Balances extends React.Component {
                         )}
                         <li css={`margin-left: 30px;`}>
                             {!compactMode &&
-                            AddTokenButton(false, 'outline', handleTransfer)}
+                            AddTokenButton(false, 'normal', handleTransfer)}
                         </li>
                     </ul>
                 </div>

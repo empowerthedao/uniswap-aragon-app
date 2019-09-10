@@ -41,13 +41,13 @@ const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMod
                         <MarginTopContainer>
                             <Info>
                                 <strong>
-                                    Only send funds to this address via the transfer process provided.
+                                    Only send ERC20 tokens to this address via the transfer process provided.
                                 </strong>
                             </Info>
                         </MarginTopContainer>
 
                         <ButtonContainer>
-                            <Button mode="outline" onClick={() => handleNewAgent()}>
+                            <Button onClick={() => handleNewAgent()}>
                                 Change Agent
                             </Button>
                         </ButtonContainer>
@@ -84,7 +84,7 @@ const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMod
                         {/*</MarginTopContainer>*/}
 
                         <ButtonContainer>
-                            <Button mode="outline" onClick={() => handleNewUniswapFactory()}>
+                            <Button onClick={() => handleNewUniswapFactory()}>
                                 Change Uniswap Factory
                             </Button>
                         </ButtonContainer>

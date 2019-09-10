@@ -1,7 +1,7 @@
 {
   "name": "Uniswap",
   "author": "EmpowerTheDao",
-  "description": "An Aragon app integrating with the Uniswap platform",
+  "description": "Swap ETH and ERC20 tokens",
   "details_url": "meta/details.md",
   "source_url": "https://github.com/empowerthedao/uniswap-aragon-app",
   "icons": [{

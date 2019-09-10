@@ -16,7 +16,7 @@ const setUniswapFactory = (api, address) => {
 }
 
 const withdraw = (api, token, recipient, amount, decimals) => {
-    const adjustedAmount = toDecimals(amount, decimals)
+    const adjustedAmount = toDecimals(amount.toString(), parseInt(decimals))
     api.transfer(token, recipient, adjustedAmount)
         .subscribe()
 }
@@ -26,10 +26,9 @@ async function deposit(api, tokenAddress, amount, decimals) {
     if (decimals === -1) {
         decimals = await tokenContract$(api, tokenAddress).pipe(
             mergeMap(token => token.decimals())).toPromise()
-        decimals = parseInt(decimals)
     }
 
-    const adjustedAmount = toDecimals(amount, decimals)
+    const adjustedAmount = toDecimals(amount.toString(), parseInt(decimals))
 
     if (tokenAddress === ETHER_TOKEN_FAKE_ADDRESS) {
         api.deposit(tokenAddress, adjustedAmount, {value: adjustedAmount})

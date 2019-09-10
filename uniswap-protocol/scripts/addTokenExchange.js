@@ -10,8 +10,8 @@ const EXCHANGE_LIQUIDITY = valueWithDecimals(3000)
 const NEW_TOKEN_NAME = "Basic Attention Token"
 const NEW_TOKEN_SYMBOL = "BAT"
 
-// const UNISWAP_FACTORY_ADDRESS = UniswapFactory.address
-const UNISWAP_FACTORY_ADDRESS = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
+const UNISWAP_FACTORY_ADDRESS = UniswapFactory.address
+// const UNISWAP_FACTORY_ADDRESS = '0xf5D915570BC477f9B8D6C0E980aA81757A3AaC36'
 
 module.exports = async () => {
 

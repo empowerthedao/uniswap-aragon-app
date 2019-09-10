@@ -17,7 +17,7 @@ const Swap = ({balances, swapState, handleTransfer, compactMode}) => {
 
             {(dataViewTokenSwapsData || []).length > 0 ?
                 <DataView
-                    fields={['Input', 'Output', 'Time']}
+                    fields={['Sold', 'Bought', 'Time']}
                     entries={dataViewTokenSwapsData || []}
                     renderEntry={([input, output, timestamp]) => [
                         <Text

@@ -1,6 +1,4 @@
 import {useState, useCallback} from 'react'
-import Swap from "../components/swap/Swap";
-import Settings from "../components/settings/Settings";
 
 export function useTabs() {
 

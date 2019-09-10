@@ -64,8 +64,8 @@ contract Template is TemplateBase {
         tokenFactory = new MiniMeTokenFactory();
         uniswapFactory = _uniswapFactory;
 
-        enabledTokens.push(address(0x9310dC480CbF907D6A3c41eF2e33B09E61605531));
-        enabledTokens.push(address(0xC56a94cB177B297A9f4fe11781CE4E2eD1829f8B));
+        enabledTokens.push(address(0xd0e94A88cCfBDBdc7e2B24AEf514dfaB7C1Ae3F8));
+        enabledTokens.push(address(0xBfEDc999F2357a58Cf1DaF7AE970913e1fe75209));
     }
 
     function newInstance() public {
@@ -109,7 +109,6 @@ contract Template is TemplateBase {
 
         acl.createPermission(address(app), agent, agent.EXECUTE_ROLE(), root);
         acl.createPermission(address(app), agent, agent.SAFE_EXECUTE_ROLE(), root);
-        acl.createPermission(address(app), agent, agent.RUN_SCRIPT_ROLE(), root);
         acl.createPermission(address(app), agent, agent.TRANSFER_ROLE(), root);
 
         // Clean up permissions

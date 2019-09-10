@@ -1,6 +1,8 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo, useCallback} from 'react'
 import styled from 'styled-components'
 import {Button, DropDown, Info, TextInput, unselectable, useTheme} from '@aragon/ui'
+import {Subject} from 'rxjs'
+import {debounceTime} from "rxjs/operators";
 
 const SELECTOR_SYMBOL_INDEX = 0
 const SELECTOR_SYMBOL = "..."
@@ -12,7 +14,7 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
     const {uniswapTokens, getTokensEthExchangeRate} = swapPanelState
 
     const uniswapTokensSymbols = (uniswapTokens || []).map(uniswapToken => uniswapToken.symbol)
-    const uniswapTokensSymbolsWithSelector = ["...", ...uniswapTokensSymbols]
+    const uniswapTokensSymbolsWithSelector = [SELECTOR_SYMBOL, ...uniswapTokensSymbols]
 
     const [inputAmount, setInputAmount] = useState("")
     const [selectedInputTokenIndex, setSelectedInputTokenIndex] = useState(0)
@@ -94,6 +96,20 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
         setSelectedOutputTokenIndex(newSelectedOutputTokenIndex)
     }
 
+    const onSwapInput$ = useMemo(() => {
+        const onSwapInput$ = new Subject()
+
+        // This forces waiting for 300ms after last input before calling
+        // setInputAmount() preventing flashing update of output amount
+        onSwapInput$.pipe(
+            debounceTime(300)
+        ).subscribe(input => {
+            setInputAmount(input)
+        })
+
+        return onSwapInput$
+    }, [])
+
     return (
         <form onSubmit={event => handleSubmit(event)}>
             <DepositContainer>
@@ -107,9 +123,7 @@ const SwapPanel = ({swapPanelState, handleSwap}) => {
                 <CombinedInput>
                     <TextInput
                         type="number"
-                        onChange={event => {
-                            setInputAmount(event.target.value)
-                        }}
+                        onChange={event => {onSwapInput$.next(event.target.value)}}
                         min={0}
                         step="any"
                         required

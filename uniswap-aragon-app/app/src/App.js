@@ -127,6 +127,5 @@ export default () => {
 }
 
 App.propTypes = {
-    api: PropTypes.object,
     compactMode: PropTypes.bool
 }

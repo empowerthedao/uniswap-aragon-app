@@ -143,7 +143,6 @@ contract Uniswap is AragonApp {
     * @param _to Address of the recipient of tokens
     * @param _value Amount of tokens being transferred
     */
-    /* solium-disable-next-line function-order */
     function transfer(address _token, address _to, uint256 _value) external auth(TRANSFER_ROLE) {
         agent.transfer(_token, _to, _value);
     }

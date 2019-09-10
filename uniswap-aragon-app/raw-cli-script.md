@@ -54,4 +54,4 @@ dao acl create `<DAO-Address>` `<Uniswap-App-Proxy-Address>` SET_UNISWAP_FACTORY
 
 dao acl create `<DAO-Address>` `<Uniswap-App-Proxy-Address>` SET_AGENT_ROLE `<Voting-App-Proxy-Address>` `<Voting-App-Proxy-Address>` --environment aragon:rinkeby
 
-`https://rinkeby.aragon.org/#/`<DAO-Address>``
+`https://rinkeby.aragon.org/#/<DAO-Address>`

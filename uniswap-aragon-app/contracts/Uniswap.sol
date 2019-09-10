@@ -19,6 +19,7 @@ contract Uniswap is AragonApp {
     bytes32 public constant ETH_TOKEN_SWAP_ROLE = keccak256("ETH_TOKEN_SWAP_ROLE");
 
     string private constant ERROR_TOO_MANY_TOKENS = "UNISWAP_TOO_MANY_TOKENS";
+    string private constant ERROR_NOT_CONTRACT = "UNISWAP_NOT_CONTRACT";
     string private constant ERROR_TOKEN_ALREADY_ADDED = "UNISWAP_ERROR_TOKEN_ALREADY_ADDED";
     string private constant ERROR_CAN_NOT_DELETE_TOKEN = "UNISWAP_CAN_NOT_DELETE_TOKEN";
     string private constant ERROR_VALUE_MISMATCH = "UNISWAP_VALUE_MISMATCH";
@@ -53,15 +54,16 @@ contract Uniswap is AragonApp {
     */
     function initialize(address _agent, address _uniswapFactory, address[] _enabledTokens) external onlyInit {
         require(_enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
-
-        agent = Agent(_agent);
-        uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
-        enabledTokens = _enabledTokens;
+        require(isContract(_agent), ERROR_NOT_CONTRACT);
 
         for (uint256 enabledTokenIndex = 0; enabledTokenIndex < _enabledTokens.length; enabledTokenIndex++) {
             address exchangeAddress = uniswapFactory.getExchange(_enabledTokens[enabledTokenIndex]);
             require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
         }
+
+        agent = Agent(_agent);
+        uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
+        enabledTokens = _enabledTokens;
 
         initialized();
 
@@ -73,6 +75,8 @@ contract Uniswap is AragonApp {
     * @param _agent New Agent address
     */
     function setAgent(address _agent) external auth(SET_AGENT_ROLE) {
+        require(isContract(_agent), ERROR_NOT_CONTRACT);
+
         agent = Agent(_agent);
         emit NewAgentSet(_agent);
     }
@@ -82,6 +86,8 @@ contract Uniswap is AragonApp {
     * @param _uniswapFactory New Uniswap Factory address
     */
     function setUniswapFactory(address _uniswapFactory) external auth(SET_UNISWAP_FACTORY_ROLE) {
+        require(isContract(_uniswapFactory), ERROR_NOT_CONTRACT);
+
         uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
         emit NewUniswapFactorySet(_uniswapFactory);
     }

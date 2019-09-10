@@ -18,10 +18,41 @@ const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMod
         >
 
             <div css={`
+             flex-basis: 0;
+             flex-grow: 1; 
+             margin: 0px 10px;
+             margin-bottom: 20px;
+             ${compactMode && "width: 100%; padding-right: 20px;"}
+             `}>
+                <Box heading={"Uniswap Factory Address"} css={`flex-basis: 50%;`}>
+                    <div css={`display: flex; flex-direction: column;`}>
+                        <Text>
+                            The contract that maintains the addresses of the individual Uniswap token exchanges.
+                        </Text>
+
+                        <MarginTopContainer>
+                            <IdentityBadge
+                                entity={uniswapFactoryAddress || ZERO_ADDRESS}
+                                shorten={compactMode}
+                            />
+                        </MarginTopContainer>
+
+                        <ButtonContainer>
+                            <Button onClick={() => handleNewUniswapFactory()}>
+                                Change Uniswap Factory
+                            </Button>
+                        </ButtonContainer>
+                    </div>
+                </Box>
+            </div>
+
+            <div css={`
             flex-basis: 0; 
             flex-grow: 1; 
             margin: 0px 10px; 
             margin-bottom: 20px;
+            ${compactMode && "width: 100%; padding-right: 20px;"}
+
             `}>
                 <Box heading={"Agent Address"}>
 
@@ -49,43 +80,6 @@ const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMod
                         <ButtonContainer>
                             <Button onClick={() => handleNewAgent()}>
                                 Change Agent
-                            </Button>
-                        </ButtonContainer>
-                    </div>
-                </Box>
-            </div>
-
-            <div css={`
-             flex-basis: 0;
-             flex-grow: 1; 
-             margin: 0px 10px;
-           
-             ${compactMode && "width: 100%; padding-right: 20px;"}
-             `}>
-                <Box heading={"Uniswap Factory Address"} css={`flex-basis: 50%;`}>
-                    <div css={`display: flex; flex-direction: column;`}>
-                        <Text>
-                            The contract that maintains the addresses of the individual Uniswap token exchanges.
-                        </Text>
-
-                        <MarginTopContainer>
-                            <IdentityBadge
-                                entity={uniswapFactoryAddress || ZERO_ADDRESS}
-                                shorten={compactMode}
-                            />
-                        </MarginTopContainer>
-
-                        {/*<MarginTopContainer>*/}
-                        {/*    <Info mode="warning">*/}
-                        {/*        <strong >*/}
-                        {/*            Never send funds to this address.*/}
-                        {/*        </strong>*/}
-                        {/*    </Info>*/}
-                        {/*</MarginTopContainer>*/}
-
-                        <ButtonContainer>
-                            <Button onClick={() => handleNewUniswapFactory()}>
-                                Change Uniswap Factory
                             </Button>
                         </ButtonContainer>
                     </div>

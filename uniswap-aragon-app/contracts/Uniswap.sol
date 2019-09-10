@@ -51,19 +51,21 @@ contract Uniswap is AragonApp {
     /**
     * @notice Initialize the Uniswap App
     * @param _agent The Agent contract address
+    * @param _uniswapFactory The Uniswap Factory contract address
+    * @param _enabledTokens An array of enabled tokens
     */
     function initialize(address _agent, address _uniswapFactory, address[] _enabledTokens) external onlyInit {
-        require(_enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
+        require(_enabledTokens.length <= MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
         require(isContract(_agent), ERROR_NOT_CONTRACT);
+
+        agent = Agent(_agent);
+        uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
+        enabledTokens = _enabledTokens;
 
         for (uint256 enabledTokenIndex = 0; enabledTokenIndex < _enabledTokens.length; enabledTokenIndex++) {
             address exchangeAddress = uniswapFactory.getExchange(_enabledTokens[enabledTokenIndex]);
             require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
         }
-
-        agent = Agent(_agent);
-        uniswapFactory = UniswapFactoryInterface(_uniswapFactory);
-        enabledTokens = _enabledTokens;
 
         initialized();
 

@@ -1,11 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import throttle from 'lodash.throttle'
-import {theme, breakpoint, Button, Box} from '@aragon/ui'
+import {theme, breakpoint, Button, Box, GU} from '@aragon/ui'
 import BalanceToken from './BalanceToken'
 import {round} from '../../lib/math-utils'
 import AbortController from 'abort-controller'
-import BalanceToken2 from "./BalanceToken";
 
 const CONVERT_API_BASE = 'https://min-api.cryptocompare.com/data'
 const CONVERT_THROTTLE_TIME = 5000
@@ -135,7 +134,8 @@ const ListItem = styled.li`
   grid-template-columns: 1fr 1fr;
   padding: 8px 20px;
   border-bottom: 1px solid ${theme.contentBorder};
-
+  min-width: ${20 * GU}px;
+ 
   ${breakpoint(
     'medium',
     `

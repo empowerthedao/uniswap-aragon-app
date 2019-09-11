@@ -5,6 +5,7 @@ import {theme, breakpoint, Button, Box} from '@aragon/ui'
 import BalanceToken from './BalanceToken'
 import {round} from '../../lib/math-utils'
 import AbortController from 'abort-controller'
+import BalanceToken2 from "./BalanceToken";
 
 const CONVERT_API_BASE = 'https://min-api.cryptocompare.com/data'
 const CONVERT_THROTTLE_TIME = 5000
@@ -95,7 +96,7 @@ class Balances extends React.Component {
                                             convertedAmount={convertedAmount}
                                             symbol={symbol}
                                             verified={verified}
-                                            compactMode={compactMode}
+                                            compact={compactMode}
                                         />
                                     </ListItem>
                                 )
@@ -103,7 +104,7 @@ class Balances extends React.Component {
                         ) : (
                             <EmptyListItem/>
                         )}
-                        <li css={`margin-left: 30px;`}>
+                        <li css={`margin-left: 20px;`}>
                             {!compactMode &&
                             AddTokenButton(false, 'normal', handleTransfer)}
                         </li>

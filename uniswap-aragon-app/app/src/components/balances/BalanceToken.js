@@ -2,7 +2,6 @@ import React from 'react'
 import { GU, textStyle, useTheme } from '@aragon/ui'
 import {formatTokenAmount} from "../../lib/format-utils";
 
-
 const splitAmount = amount => {
   const [integer, fractional] = formatTokenAmount(amount).split('.')
   return (
@@ -31,7 +30,7 @@ const BalanceToken = ({
   const theme = useTheme()
 
   return (
-    <div css="display: inline-block">
+    <React.Fragment>
       <div
         title={symbol || 'Unknown symbol'}
         css={`
@@ -40,6 +39,8 @@ const BalanceToken = ({
           color: ${theme.surfaceContentSecondary};
           ${textStyle('body2')}
           text-transform: uppercase;
+          font-size: 28px;
+          ${!compact && `font-size: 14px;`}
         `}
       >
         {verified && symbol && (
@@ -55,11 +56,14 @@ const BalanceToken = ({
         )}
         {symbol || '?'}
       </div>
-      <div>
+        <div css={`
+      text-align: right;
+      ${!compact && `text-align: left;`}
+    `}>
         <div
           css={`
             ${textStyle('title2')}
-            margin: ${(compact ? 1 : 1.5) * GU}px 0;
+            margin: ${(compact ? 1 : 2.5) * GU}px 0;
           `}
         >
           {splitAmount(amount.toFixed(3))}
@@ -75,7 +79,7 @@ const BalanceToken = ({
             : '−'}
         </div>
       </div>
-    </div>
+    </React.Fragment>
   )
 }
 

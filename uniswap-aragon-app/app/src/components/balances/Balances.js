@@ -68,7 +68,7 @@ class Balances extends React.Component {
             }
         )
         return (
-            <Box heading={"Agent Balances"} padding={compactMode ? 0 : 24}>
+            <Box heading={"Agent Balances"} padding={compactMode ? 0 : 5}>
                 <div css={`
                     /*
                     * translate3d() fixes an issue on recent Firefox versions where the

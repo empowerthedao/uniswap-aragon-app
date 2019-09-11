@@ -38,7 +38,10 @@ async function deposit(api, tokenAddress, amount, decimals) {
             token: {
                 address: tokenAddress,
                 value: adjustedAmount
-            }
+            },
+            // Hardcoded gas to prevent MetaMask doing gas estimation and telling the user that their
+            // transaction will fail (before the approve is mined).
+            gas: 450000
         })
             .subscribe()
     }

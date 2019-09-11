@@ -59,6 +59,7 @@ module.exports = {
         },
         rinkeby: {
             network_id: 4,
+            gasPrice: 10000000000, // 10 Gwei
             provider: providerForNetwork('rinkeby'),
         },
         coverage: {

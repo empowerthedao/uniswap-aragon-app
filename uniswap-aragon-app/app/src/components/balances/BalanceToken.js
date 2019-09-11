@@ -63,7 +63,7 @@ const BalanceToken = ({
         <div
           css={`
             ${textStyle('title2')}
-            margin: ${(compact ? 1 : 2.5) * GU}px 0;
+            margin: ${(compact ? 1 : 1.5) * GU}px 0;
           `}
         >
           {splitAmount(amount.toFixed(3))}

@@ -103,7 +103,7 @@ class Balances extends React.Component {
                         ) : (
                             <EmptyListItem/>
                         )}
-                        <li css={`margin-left: 20px;`}>
+                        <li css={`margin-left: 0px;`}>
                             {!compactMode &&
                             AddTokenButton(false, 'normal', handleTransfer)}
                         </li>

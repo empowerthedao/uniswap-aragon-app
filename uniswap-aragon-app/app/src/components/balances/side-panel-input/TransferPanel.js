@@ -1,13 +1,16 @@
-import React, {useMemo, useState} from 'react'
-import styled from 'styled-components'
-import {Tabs} from '@aragon/ui'
+import React, { useMemo, useState } from "react"
+import styled from "styled-components"
+import { Tabs } from "@aragon/ui"
+import Deposit from "./Deposit"
+import Withdraw from "./Withdraw"
 
-import Deposit from './Deposit'
-import Withdraw from './Withdraw'
-
-const TransferPanel = ({tokens, handleDeposit, handleWithdraw, opened}) => {
+const TransferPanel = ({ handleDeposit, handleWithdraw, opened, transferPanelsState }) => {
 
     const [screenIndex, setScreenIndex] = useState(0)
+
+    const { tokens, balances, checkConnectedAccountBalance } = transferPanelsState
+
+    const oneOrMoreTokensWithBalance = tokens.filter(token => token.amount > 0).length > 0
 
     useMemo(() => {
         if (!opened) {
@@ -19,20 +22,24 @@ const TransferPanel = ({tokens, handleDeposit, handleWithdraw, opened}) => {
         <div>
             <TabBarWrapper>
                 <Tabs
-                    items={['Deposit', 'Withdraw']}
+                    items={["Deposit", "Withdraw"]}
                     selected={screenIndex}
-                    onChange={setScreenIndex}
+                    onChange={id => oneOrMoreTokensWithBalance ? setScreenIndex(id) : setScreenIndex(0)}
                 />
             </TabBarWrapper>
 
             {screenIndex === 0 && (
                 <Deposit
-                    tokens={tokens} handleDeposit={handleDeposit}
+                    tokens={tokens}
+                    handleDeposit={handleDeposit}
+                    checkConnectedAccountBalance={checkConnectedAccountBalance}
                 />
             )}
             {screenIndex === 1 && (
                 <Withdraw
-                    tokens={tokens} handleWithdraw={handleWithdraw}
+                    tokens={tokens}
+                    balances={balances}
+                    handleWithdraw={handleWithdraw}
                 />
             )}
         </div>

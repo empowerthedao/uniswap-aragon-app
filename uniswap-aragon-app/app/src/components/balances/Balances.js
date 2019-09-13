@@ -1,22 +1,22 @@
-import React from 'react'
-import styled from 'styled-components'
-import throttle from 'lodash.throttle'
-import {theme, breakpoint, Button, Box, GU} from '@aragon/ui'
-import BalanceToken from './BalanceToken'
-import {round} from '../../lib/math-utils'
-import AbortController from 'abort-controller'
+import React from "react"
+import styled from "styled-components"
+import throttle from "lodash.throttle"
+import { theme, breakpoint, Button, Box, GU } from "@aragon/ui"
+import BalanceToken from "./BalanceToken"
+import { round } from "../../lib/math-utils"
+import AbortController from "abort-controller"
 
-const CONVERT_API_BASE = 'https://min-api.cryptocompare.com/data'
+const CONVERT_API_BASE = "https://min-api.cryptocompare.com/data"
 const CONVERT_THROTTLE_TIME = 5000
 
 const convertApiUrl = symbols =>
-    `${CONVERT_API_BASE}/price?fsym=USD&tsyms=${symbols.join(',')}`
+    `${CONVERT_API_BASE}/price?fsym=USD&tsyms=${symbols.join(",")}`
 
 class Balances extends React.Component {
     controller = new AbortController()
 
     state = {
-        convertRates: {},
+        convertRates: {}
     }
 
     componentDidMount() {
@@ -27,11 +27,11 @@ class Balances extends React.Component {
         this.updateConvertedRates(nextProps)
     }
 
-    updateConvertedRates = throttle(async ({balances}) => {
+    updateConvertedRates = throttle(async ({ balances }) => {
 
         const verifiedSymbols = balances
-            .filter(({verified}) => verified)
-            .map(({symbol}) => symbol)
+            .filter(({ verified }) => verified)
+            .map(({ symbol }) => symbol)
 
         if (!verifiedSymbols.length) {
             return
@@ -41,7 +41,7 @@ class Balances extends React.Component {
             signal: this.controller.signal
         })
         const convertRates = await res.json()
-        this.setState({convertRates})
+        this.setState({ convertRates })
     }, CONVERT_THROTTLE_TIME)
 
     componentWillUnmount() {
@@ -49,10 +49,10 @@ class Balances extends React.Component {
     }
 
     render() {
-        const {compactMode, balances, handleTransfer} = this.props
-        const {convertRates} = this.state
+        const { compactMode, balances, handleTransfer } = this.props
+        const { convertRates } = this.state
         const balanceItems = balances.map(
-            ({address, numData: {amount, decimals}, symbol, verified}) => {
+            ({ address, numData: { amount, decimals }, symbol, verified }) => {
                 const adjustedAmount = amount / Math.pow(10, decimals)
                 const convertedAmount =
                     verified && convertRates[symbol]
@@ -63,7 +63,7 @@ class Balances extends React.Component {
                     symbol,
                     verified,
                     amount: round(adjustedAmount, 5),
-                    convertedAmount: round(convertedAmount, 5),
+                    convertedAmount: round(convertedAmount, 5)
                 }
             }
         )
@@ -88,7 +88,7 @@ class Balances extends React.Component {
                     `}>
                         {balanceItems.length > 0 ? (
                             balanceItems.map(
-                                ({address, amount, convertedAmount, symbol, verified}) => (
+                                ({ address, amount, convertedAmount, symbol, verified }) => (
                                     <ListItem key={address}>
                                         <BalanceToken
                                             amount={amount}
@@ -105,12 +105,12 @@ class Balances extends React.Component {
                         )}
                         <li>
                             {!compactMode &&
-                            AddTokenButton(false, 'normal', handleTransfer)}
+                            AddTokenButton(false, "normal", handleTransfer)}
                         </li>
                     </ul>
                 </div>
                 {compactMode && (
-                    <Wrapper>{AddTokenButton(true, 'strong', handleTransfer)}</Wrapper>
+                    <Wrapper>{AddTokenButton(true, "strong", handleTransfer)}</Wrapper>
                 )}
             </Box>
         )
@@ -118,7 +118,7 @@ class Balances extends React.Component {
 }
 
 const EmptyListItem = () => (
-    <ListItem style={{opacity: '0'}}>
+    <ListItem style={{ opacity: "0" }}>
         <BalanceToken amount={0} convertedAmount={0}/>
     </ListItem>
 )
@@ -137,7 +137,7 @@ const ListItem = styled.li`
   min-width: ${20 * GU}px;
  
   ${breakpoint(
-    'medium',
+    "medium",
     `
       display: block;
       padding: 20px;

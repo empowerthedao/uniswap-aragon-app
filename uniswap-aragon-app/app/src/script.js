@@ -1,17 +1,17 @@
-import '@babel/polyfill'
-import Aragon, {events} from '@aragon/api'
+import "@babel/polyfill"
+import Aragon, { events } from "@aragon/api"
 import retryEvery from "./lib/retry-every"
 import {
     agentAddress$,
     agentApp$,
     allEnabledTokensExchanges$,
     uniswapFactoryAddress$
-} from "./web3/ExternalContracts";
-import {agentInitializationBlock$, agentBalances$} from "./web3/AgentData";
-import {ETHER_TOKEN_FAKE_ADDRESS} from "./lib/shared-constants";
-import {uniswapTokens$} from "./web3/UniswapData";
+} from "./web3/ExternalContracts"
+import { agentInitializationBlock$, agentBalances$ } from "./web3/AgentData"
+import { ETHER_TOKEN_FAKE_ADDRESS } from "./lib/shared-constants"
+import { uniswapTokens$ } from "./web3/UniswapData"
 
-const DEBUG_LOGS = true;
+const DEBUG_LOGS = true
 const debugLog = message => {
     if (DEBUG_LOGS) {
         console.debug(message)
@@ -28,7 +28,7 @@ retryEvery(retry => {
         () => initialize(),
         error => {
             console.error(
-                'Could not start background script execution due to the contract not loading the agent address:',
+                "Could not start background script execution due to the contract not loading the agent address:",
                 error
             )
             retry()
@@ -101,63 +101,63 @@ const onNewEvent = async (state, storeEvent) => {
                 ...state,
                 isSyncing: false
             }
-        case 'AppInitialized':
+        case "AppInitialized":
             debugLog("APP CONSTRUCTOR EVENT")
             api.identify(eventAddress)
             return {
                 ...state,
                 appAddress: eventAddress
             }
-        case 'NewAgentSet':
+        case "NewAgentSet":
             debugLog("NEW AGENT SET")
             return {
                 ...state,
                 agentAddress: await agentAddress$(api).toPromise(),
                 balances: await agentBalances$(api, activeTokens(state)).toPromise()
             }
-        case 'NewUniswapFactorySet':
+        case "NewUniswapFactorySet":
             debugLog("NEW UNISWAP FACTORY SET")
             return {
                 ...state,
                 uniswapFactoryAddress: await uniswapFactoryAddress$(api).toPromise(),
                 uniswapTokens: await uniswapTokens$(api).toPromise()
             }
-        case 'VaultTransfer':
-        case 'VaultDeposit':
+        case "VaultTransfer":
+        case "VaultDeposit":
             debugLog("AGENT TRANSFER")
-            const {token} = eventParams
+            const { token } = eventParams
             const activeTokensWithToken = newActiveTokens(state, token)
             return {
                 ...state,
                 balances: await agentBalances$(api, activeTokensWithToken).toPromise(),
                 activeTokens: activeTokensWithToken
             }
-        case 'ProxyDeposit':
+        case "ProxyDeposit":
             debugLog("ETH DEPOSIT")
             return {
                 ...state,
                 balances: await agentBalances$(api, activeTokens(state)).toPromise()
             }
-        case 'EthToTokenSwapInput':
-        case 'TokenToEthSwapInput':
+        case "EthToTokenSwapInput":
+        case "TokenToEthSwapInput":
             debugLog("ETH TO TOKEN SWAP INPUT")
-            const {tokenTransferred} = eventParams
+            const { tokenTransferred } = eventParams
             const activeTokensWithTokenReturned = newActiveTokens(state, tokenTransferred)
             return {
                 ...state,
                 balances: await agentBalances$(api, activeTokensWithTokenReturned).toPromise(),
                 activeTokens: activeTokensWithTokenReturned
             }
-        case 'TokenPurchase':
+        case "TokenPurchase":
             debugLog("TOKEN PURCHASE")
-            const {eth_sold, tokens_bought} = eventParams
+            const { eth_sold, tokens_bought } = eventParams
             return {
                 ...state,
                 tokenSwaps: await newTokenSwaps(state, storeEvent, "ETH_TO_TOKEN", eth_sold, tokens_bought)
             }
-        case 'EthPurchase':
+        case "EthPurchase":
             debugLog("ETH PURCHASE")
-            const {eth_bought, tokens_sold} = eventParams
+            const { eth_bought, tokens_sold } = eventParams
             return {
                 ...state,
                 tokenSwaps: await newTokenSwaps(state, storeEvent, "TOKEN_TO_ETH", tokens_sold, eth_bought)
@@ -176,12 +176,12 @@ const newActiveTokens = (state, newToken) => {
 }
 
 const newTokenSwaps = async (state, storeEvent, type, input, output) => {
-    const {blockNumber, address} = storeEvent
+    const { blockNumber, address } = storeEvent
 
     const newTokenSwaps = [...state.tokenSwaps || []]
 
     if (state.agentAddress === storeEvent.returnValues.buyer) {
-        const { timestamp: blockTimestamp } = await api.web3Eth('getBlock', blockNumber).toPromise()
+        const { timestamp: blockTimestamp } = await api.web3Eth("getBlock", blockNumber).toPromise()
         newTokenSwaps.push({
             type: type,
             input: input,

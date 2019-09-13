@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { GU, Badge } from '@aragon/ui'
-import { ETHER_TOKEN_FAKE_ADDRESS } from '../../lib/shared-constants'
-import { addressesEqual } from '../../lib/web3-utils'
+import { ETHER_TOKEN_FAKE_ADDRESS } from '../../../../lib/shared-constants'
+import { addressesEqual } from '../../../../lib/web3-utils'
 import AddressBadge from "./AddressBadge";
 
 class TokenSelectorInstance extends React.PureComponent {

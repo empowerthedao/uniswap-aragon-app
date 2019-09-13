@@ -20,21 +20,19 @@ function App({compactMode}) {
 
     const {
         isSyncing,
-        tokens,
-        balances,
-        swapState,
-        swapPanelState,
         settings,
         actions,
         sidePanel,
-        tabs
+        tabs,
+        swapState,
+        swapPanelState,
+        transferPanelsState
     } = useAppLogic()
 
     const selectedTabComponent = () => {
         switch (tabs.tabBarSelected.id) {
             case 'SWAP':
                 return <Swap compactMode={compactMode}
-                             balances={balances}
                              swapState={swapState}
                              handleTransfer={() => sidePanel.openPanelActions.transfer()}/>
             case 'SETTINGS':
@@ -50,7 +48,7 @@ function App({compactMode}) {
     const currentSidePanel = () => {
         switch (sidePanel.currentSidePanel.id) {
             case 'TRANSFER':
-                return <TransferPanel tokens={tokens}
+                return <TransferPanel transferPanelsState={transferPanelsState}
                                       opened={sidePanel.opened}
                                       handleDeposit={actions.deposit}
                                       handleWithdraw={actions.withdraw}/>

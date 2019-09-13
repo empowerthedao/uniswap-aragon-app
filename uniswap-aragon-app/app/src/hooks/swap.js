@@ -5,7 +5,7 @@ import {format} from 'date-fns'
 
 export function useSwapState() {
 
-    const {tokenSwaps, uniswapTokens} = useAppState()
+    const {balances, tokenSwaps, uniswapTokens} = useAppState()
 
     const mappedTokenSwaps = (tokenSwaps || [])
         .map(tokenSwap => {
@@ -36,6 +36,7 @@ export function useSwapState() {
 
 
     return {
+        balances,
         tokenSwaps: mappedTokenSwaps
     }
 }

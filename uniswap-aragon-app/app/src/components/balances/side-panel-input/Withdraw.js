@@ -1,24 +1,48 @@
 import React, {useState} from 'react'
 import {
-    Info, DropDown, Field, TextInput, Button, unselectable, useTheme
+    Info,
+    DropDown,
+    Field,
+    TextInput,
+    Button,
+    unselectable,
+    useTheme,
+    IconCross,
+    GU,
+    textStyle
 } from '@aragon/ui'
 import styled from "styled-components";
+import {toDecimals} from "../../../lib/math-utils";
+import BN from "bn.js";
 
-const Withdraw = ({tokens, handleWithdraw}) => {
+const Withdraw = ({balances, tokens, handleWithdraw}) => {
+
+    const tokensWithBalance = tokens.filter(token => token.amount && token.amount > 0)
 
     const [recipient, setRecipient] = useState("")
     const [amount, setAmount] = useState(0)
-    const [selectedCurrency, setSelectedCurrency] = useState(0)
+    const [selectedToken, setSelectedToken] = useState(0)
 
-    const tokenSymbols = tokens.map(token => token.symbol)
+    const tokenSymbols = tokensWithBalance.map(token => token.symbol)
 
-    const getSelectedTokenAddress = () => tokens[selectedCurrency].address
-    const getSelectedTokenDecimals = () => tokens[selectedCurrency].decimals
+    const getSelectedTokenAddress = () => tokensWithBalance[selectedToken].address
+    const getSelectedTokenDecimals = () => tokensWithBalance[selectedToken].decimals
+    const getSelectedTokenBalance = () => balances
+        .find(balance => balance.address === tokensWithBalance[selectedToken].address).amount
 
     const handleSubmit = (event) => {
         event.preventDefault()
         handleWithdraw(getSelectedTokenAddress(), recipient, amount, getSelectedTokenDecimals())
     }
+
+    const showBalanceError = () => {
+        const amountWithDecimals = toDecimals(amount.toString(), parseInt(getSelectedTokenDecimals()))
+        const amountBn = new BN(amountWithDecimals)
+        const selectedTokenBalanceBn = new BN(getSelectedTokenBalance())
+        return amountBn.gt(selectedTokenBalanceBn)
+    }
+
+    const displayError = showBalanceError()
 
     return (
         <form onSubmit={handleSubmit}>
@@ -48,15 +72,22 @@ const Withdraw = ({tokens, handleWithdraw}) => {
                     />
                     <DropDown css={`margin-left: 16px;`}
                               items={tokenSymbols}
-                              selected={selectedCurrency}
-                              onChange={selectedTokenIndex => setSelectedCurrency(selectedTokenIndex)}
+                              selected={selectedToken}
+                              onChange={selectedTokenIndex => setSelectedToken(selectedTokenIndex)}
                     />
                 </CombinedInput>
 
-                <ButtonStyled wide mode="strong"
-                              type="submit">
+                <Button css={`
+                            margin-top: 10px;
+                            margin-bottom: ${displayError ? "5px;" : "30px;"}`}
+                        wide
+                        mode="strong"
+                        type="submit"
+                        disabled={displayError}>
                     Submit Withdrawal
-                </ButtonStyled>
+                </Button>
+
+                {displayError && <ValidationError message={"Amount is greater than the Agent's balance"}/>}
 
                 <Info.Action title="Transfer action">
                     This action will withdraw the specified amount of Tokens or Ether from the Compound App's Agent.
@@ -72,10 +103,6 @@ const WithdrawContainer = styled.div`
 `
 const FieldStyled = styled(Field)`
     margin-bottom: 23px;
-`
-const ButtonStyled = styled(Button)`
-    margin-top: 10px;
-    margin-bottom: 30px;
 `
 
 const CombinedInput = styled.div`
@@ -125,6 +152,40 @@ const StyledAsterisk = props => {
         >
       *
     </span>
+    )
+}
+
+const VSpace = styled.div`
+  height: ${p => (p.size || 1) * GU}px;
+`
+
+const ValidationError = ({message}) => {
+    const theme = useTheme()
+    return (
+        <div css={`margin-bottom: 20px;`}>
+            <VSpace size={2}/>
+            <div
+                css={`
+          display: flex;
+          align-items: center;
+        `}
+            >
+                <IconCross
+                    size="tiny"
+                    css={`
+            color: ${theme.negative};
+            margin-right: ${1 * GU}px;
+          `}
+                />
+                <span
+                    css={`
+            ${textStyle('body3')}
+          `}
+                >
+          {message}
+                </span>
+            </div>
+        </div>
     )
 }
 

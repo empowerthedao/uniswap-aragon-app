@@ -5,6 +5,7 @@ import {useSidePanel} from "./side-panels";
 import {useTabs} from "./tabs";
 import {useSwapPanelState} from "./swap-panel";
 import {useSwapState} from "./swap";
+import { useTransferState } from "./transfer-panels"
 
 const useSetAgentAddress = (onDone) => {
     const api = useApi()
@@ -54,14 +55,13 @@ const useEthToTokenSwapInput = (onDone) => {
 export function useAppLogic() {
     const {
         isSyncing,
-        tokens,
         agentAddress,
-        balances,
         uniswapFactoryAddress
     } = useAppState()
 
     const swapState = useSwapState()
     const swapPanelState = useSwapPanelState()
+    const transferPanelsState = useTransferState()
     const settings = {agentAddress, uniswapFactoryAddress}
 
     const sidePanel = useSidePanel()
@@ -77,13 +77,12 @@ export function useAppLogic() {
 
     return {
         isSyncing,
-        balances,
-        tokens,
-        swapState,
-        swapPanelState,
         settings,
         actions,
         sidePanel,
-        tabs
+        tabs,
+        swapState,
+        swapPanelState,
+        transferPanelsState,
     }
 }

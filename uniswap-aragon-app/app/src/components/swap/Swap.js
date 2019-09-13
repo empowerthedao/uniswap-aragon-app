@@ -5,9 +5,9 @@ import {Box, DataView, Text, theme} from "@aragon/ui";
 
 const PAGINATION = 10
 
-const Swap = ({balances, swapState, handleTransfer, compactMode}) => {
+const Swap = ({swapState, handleTransfer, compactMode}) => {
 
-    const {tokenSwaps} = swapState
+    const {balances, tokenSwaps} = swapState
 
     const dataViewTokenSwapsData = tokenSwaps.map(tokenSwap => tokenSwap.dataViewFormat)
 

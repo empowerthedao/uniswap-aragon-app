@@ -10,6 +10,8 @@ The current functionality allows multiple Uniswap exchanges to be enabled in the
 #### :rotating_light: Security review status: pre-audit  
 The code in this repo has not been audited.
 
+## Deployment Instructions
+
 [Instructions for local deployment](https://github.com/empowerthedao/uniswap-aragon-app/blob/master/local-install.md)
 for development purposes.
 

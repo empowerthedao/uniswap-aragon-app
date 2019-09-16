@@ -5,7 +5,7 @@ addresses from the deployment process into the Aragon app deployment script for 
 all global dependencies be the most recent versions available, except for Node.
 
 Pre-requisite dependencies:
-- [NPM](https://nodejs.org/en/download/)
+- [NPM from Node v10](https://nodejs.org/en/download/)
 - [Aragon CLI](https://github.com/aragon/aragon-cli)
 - [Truffle](https://github.com/trufflesuite/truffle)
 - [MetaMask](https://metamask.io/)
@@ -60,7 +60,7 @@ for testing purposes.
 
 ## Uniswap Aragon App Deployment
 
-Execute the following within the `uniswap-aragon-app` directory.
+Execute the following within the `uniswap-aragon-app/uniswap-aragon-app` directory.
 
 Install dependencies:
 ```

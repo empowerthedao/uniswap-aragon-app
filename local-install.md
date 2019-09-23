@@ -20,6 +20,10 @@ Instructions are for OSX, other OS's may require additional steps.
 
 Execute the following within the `uniswap-aragon-app/uniswap-protocol` directory:
 
+Install dependencies:
+
+$ npm install
+
 Setup virtual environment, necessary for Vyper compilation. Remove `uniswap-protocol/env` directory if already created and errors occur:
 ```
 $ pip3 install virtualenv

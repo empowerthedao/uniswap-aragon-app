@@ -101,6 +101,7 @@ contract Template is TemplateBase {
         acl.createPermission(ANY_ENTITY, app, app.SET_UNISWAP_TOKENS_ROLE(), root);
         acl.createPermission(ANY_ENTITY, app, app.TRANSFER_ROLE(), root);
         acl.createPermission(ANY_ENTITY, app, app.ETH_TOKEN_SWAP_ROLE(), root);
+        acl.createPermission(ANY_ENTITY, app, app.TOKEN_ETH_SWAP_ROLE(), root);
 
         acl.createPermission(this, tokenManager, tokenManager.MINT_ROLE(), this);
         acl.grantPermission(voting, tokenManager, tokenManager.MINT_ROLE());

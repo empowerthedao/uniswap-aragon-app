@@ -21,8 +21,13 @@
       "params": []
     },
     {
-      "name": "Swap Eth and Tokens",
+      "name": "Swap Eth for Tokens",
       "id": "ETH_TOKEN_SWAP_ROLE",
+      "params": []
+    },
+    {
+      "name": "Swap Tokens for Eth",
+      "id": "TOKEN_ETH_SWAP_ROLE",
       "params": []
     }
   ],

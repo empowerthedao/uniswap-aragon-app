@@ -18,12 +18,14 @@ contract Uniswap is AragonApp {
         bytes32 public constant SET_UNISWAP_TOKENS_ROLE = keccak256("SET_UNISWAP_TOKENS_ROLE");
         bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
         bytes32 public constant ETH_TOKEN_SWAP_ROLE = keccak256("ETH_TOKEN_SWAP_ROLE");
+        bytes32 public constant TOKEN_ETH_SWAP_ROLE = keccak256("TOKEN_ETH_SWAP_ROLE");
     */
     bytes32 public constant SET_AGENT_ROLE = 0xf57d195c0663dd0e8a2210bb519e2b7de35301795015198efff16e9a2be238c8;
     bytes32 public constant SET_UNISWAP_FACTORY_ROLE = 0x1427918e67b95e0cb260e596102ff0666f3c89b377e6665a5e1972610866cd4a;
     bytes32 public constant SET_UNISWAP_TOKENS_ROLE = 0xb2ab98dbddb559eefe61173785a1b86a93c1ec3301da590c6d02a026f1eb0dcd;
     bytes32 public constant TRANSFER_ROLE = 0x8502233096d909befbda0999bb8ea2f3a6be3c138b9fbf003752a4c8bce86f6c;
     bytes32 public constant ETH_TOKEN_SWAP_ROLE = 0xef9bd5cfaa4a8d7047e868d9b606a8b2248d5f17ac8024114ade2dd3c942657a;
+    bytes32 public constant TOKEN_ETH_SWAP_ROLE = 0x1cb6048a80a6d531b3f95fdcb823d65667b81930d49614eadff9716067f29a09;
 
     string private constant ERROR_TOO_MANY_TOKENS = "UNISWAP_TOO_MANY_TOKENS";
     string private constant ERROR_NOT_CONTRACT = "UNISWAP_NOT_CONTRACT";
@@ -59,7 +61,7 @@ contract Uniswap is AragonApp {
     * @notice Initialize the Uniswap App
     * @param _agent The Agent contract address
     * @param _uniswapFactory The Uniswap Factory contract address
-    * @param _enabledTokens An array of enabled tokens
+    * @param _enabledTokens An array of enabled tokens, should not contain duplicates
     */
     function initialize(Agent _agent, UniswapFactoryInterface _uniswapFactory, address[] _enabledTokens) external onlyInit {
         require(_enabledTokens.length <= MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
@@ -188,7 +190,7 @@ contract Uniswap is AragonApp {
     function tokenToEthSwapInput(address _token, uint256 _tokenAmount, uint256 _minEthAmount, uint256 _expiredAtTime)
         external
         tokenIsEnabled(_token)
-        auth(ETH_TOKEN_SWAP_ROLE)
+        auth(TOKEN_ETH_SWAP_ROLE)
     {
         address exchangeAddress = uniswapFactory.getExchange(_token);
         require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);

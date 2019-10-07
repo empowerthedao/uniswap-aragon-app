@@ -1,6 +1,7 @@
 const Uniswap = artifacts.require('Uniswap')
 const Agent = artifacts.require('Agent')
 const TokenMock = artifacts.require('TokenMock')
+const MockUniswapFactory = artifacts.require('MockUniswapFactory')
 import {deployedContract} from "./helpers/helpers"
 import {DaoDeployment, Snapshot, TemplateAgentChainSetup} from "./helpers/ChainSetup"
 import BN from 'bn.js'
@@ -9,10 +10,10 @@ const ANY_ADDR = '0xffffffffffffffffffffffffffffffffffffffff'
 const ETH_TOKEN_ADDR = '0x0000000000000000000000000000000000000000'
 const TOKEN_BALANCE = 1000
 
-contract('Uniswap', ([rootAccount, ...accounts]) => {
+contract('Uniswap', ([rootAccount, uniswapExchange, ...accounts]) => {
 
     let chainSetup = new TemplateAgentChainSetup(new Snapshot(web3), new DaoDeployment(rootAccount))
-    let uniswapBase, uniswap, agentBase, agent, token
+    let uniswapBase, uniswap, agentBase, agent, token, mockUniswapFactory
     let SET_AGENT_ROLE, EXECUTE_ROLE, TRANSFER_ROLE
 
     before(async () => {
@@ -37,6 +38,7 @@ contract('Uniswap', ([rootAccount, ...accounts]) => {
         await agent.initialize();
 
         token = await TokenMock.new(rootAccount, TOKEN_BALANCE)
+        mockUniswapFactory = await MockUniswapFactory.new(uniswapExchange)
     })
 
     afterEach(async () => {
@@ -46,7 +48,7 @@ contract('Uniswap', ([rootAccount, ...accounts]) => {
     describe('initialize(address _agent)', () => {
 
         beforeEach(async () => {
-            await uniswap.initialize(agent.address)
+            await uniswap.initialize(agent.address, mockUniswapFactory.address, [token.address])
         })
 
         it('sets correct agent address', async () => {
@@ -57,7 +59,9 @@ contract('Uniswap', ([rootAccount, ...accounts]) => {
         describe('setAgent(address _agent)', () => {
 
             it('changes the agent address', async () => {
-                const expectedAgentAddress = accounts[1]
+                const newAgentReceipt = await chainSetup.daoDeployment.kernel.newAppInstance('0x5678', agentBase.address)
+                const newAgent = await Agent.at(deployedContract(newAgentReceipt))
+                const expectedAgentAddress = newAgent.address
                 await chainSetup.daoDeployment.acl.createPermission(rootAccount, uniswap.address, SET_AGENT_ROLE, rootAccount)
 
                 await uniswap.setAgent(expectedAgentAddress)

@@ -22,6 +22,7 @@ import "@aragon/apps-shared-minime/contracts/MiniMeToken.sol";
 import "@aragon/apps-agent/contracts/Agent.sol";
 
 import "./Uniswap.sol";
+import "./UniswapFactoryInterface.sol";
 
 
 contract TemplateBase is APMNamehash {
@@ -54,18 +55,18 @@ contract TemplateBase is APMNamehash {
 
 contract Template is TemplateBase {
     MiniMeTokenFactory tokenFactory;
-    address uniswapFactory;
+    UniswapFactoryInterface uniswapFactory;
     address[] enabledTokens;
 
     uint64 constant PCT = 10 ** 16;
     address constant ANY_ENTITY = address(-1);
 
-    constructor(ENS ens, address _uniswapFactory) TemplateBase(DAOFactory(0), ens) public {
+    constructor(ENS ens, UniswapFactoryInterface _uniswapFactory) TemplateBase(DAOFactory(0), ens) public {
         tokenFactory = new MiniMeTokenFactory();
         uniswapFactory = _uniswapFactory;
 
-        enabledTokens.push(address(0x0f9F87AcEf7d8216E78A9092b872d35c93210619));
-        enabledTokens.push(address(0x97d0cAb15bAaC862aA32679562e02200D2ABE0fA));
+        enabledTokens.push(address(0xe66d09D9195b39ea2986c1d812a415fAdf1aBC1b));
+//        enabledTokens.push(address(0x8D0E74651A0432deb113702EeA6E00cB6E6d20A0));
     }
 
     function newInstance() public {
@@ -88,7 +89,7 @@ contract Template is TemplateBase {
         token.changeController(tokenManager);
 
         // Initialize apps
-        app.initialize(address(agent), uniswapFactory, enabledTokens);
+        app.initialize(agent, uniswapFactory, enabledTokens);
 
         tokenManager.initialize(token, true, 0);
         voting.initialize(token, 50 * PCT, 20 * PCT, 1 days);

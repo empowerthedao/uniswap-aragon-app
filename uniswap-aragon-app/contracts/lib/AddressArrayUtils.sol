@@ -7,7 +7,7 @@ library AddressArrayUtils {
         uint256 length = self.length;
         for (uint256 i = 0; i < length; i++) {
             if (self[i] == item) {
-                uint256 newLength = self.length - 1;
+                uint256 newLength = length - 1;
                 if (i != newLength) {
                     self[i] = self[newLength];
                 }

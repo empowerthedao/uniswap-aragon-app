@@ -166,7 +166,6 @@ contract Uniswap is AragonApp {
     */
     function ethToTokenSwapInput(address _token, uint256 _ethAmount, uint256 _minTokenAmount, uint256 _expiredAtTime)
         external
-        isInitialized
         tokenIsEnabled(_token)
         auth(ETH_TOKEN_SWAP_ROLE)
     {
@@ -188,7 +187,6 @@ contract Uniswap is AragonApp {
     */
     function tokenToEthSwapInput(address _token, uint256 _tokenAmount, uint256 _minEthAmount, uint256 _expiredAtTime)
         external
-        isInitialized
         tokenIsEnabled(_token)
         auth(ETH_TOKEN_SWAP_ROLE)
     {

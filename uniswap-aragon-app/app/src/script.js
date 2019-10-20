@@ -141,7 +141,7 @@ const onNewEvent = async (state, storeEvent) => {
         case "EthToTokenSwapInput":
         case "TokenToEthSwapInput":
             debugLog("ETH TO TOKEN SWAP INPUT")
-            const { tokenTransferred } = eventParams
+            const { token: tokenTransferred } = eventParams
             const activeTokensWithTokenReturned = newActiveTokens(state, tokenTransferred)
             return {
                 ...state,

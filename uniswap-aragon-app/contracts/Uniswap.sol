@@ -28,7 +28,8 @@ contract Uniswap is AragonApp {
     bytes32 public constant TOKEN_ETH_SWAP_ROLE = 0x1cb6048a80a6d531b3f95fdcb823d65667b81930d49614eadff9716067f29a09;
 
     string private constant ERROR_TOO_MANY_TOKENS = "UNISWAP_TOO_MANY_TOKENS";
-    string private constant ERROR_NOT_CONTRACT = "UNISWAP_NOT_CONTRACT";
+    string private constant ERROR_AGENT_NOT_CONTRACT = "UNISWAP_AGENT_NOT_CONTRACT";
+    string private constant ERROR_FACTORY_NOT_CONTRACT = "UNISWAP_FACTORY_NOT_CONTRACT";
     string private constant ERROR_TOKEN_ALREADY_ADDED = "UNISWAP_ERROR_TOKEN_ALREADY_ADDED";
     string private constant ERROR_CAN_NOT_DELETE_TOKEN = "UNISWAP_CAN_NOT_DELETE_TOKEN";
     string private constant ERROR_VALUE_MISMATCH = "UNISWAP_VALUE_MISMATCH";
@@ -49,8 +50,8 @@ contract Uniswap is AragonApp {
     event NewUniswapFactorySet(address factory);
     event TokenEnabled(address token);
     event TokenDisabled(address token);
-    event EthToTokenSwapInput(address tokenTransferred);
-    event TokenToEthSwapInput(address tokenTransferred);
+    event EthToTokenSwapInput(uint256 ethAmount, uint256 minTokenAmount, address token, address agent);
+    event TokenToEthSwapInput(uint256 tokenAmount, uint256 minEthAmount, address token, address agent);
 
     modifier tokenIsEnabled(address _token) {
         require(enabledTokens.contains(_token), ERROR_TOKEN_NOT_ENABLED);
@@ -65,17 +66,16 @@ contract Uniswap is AragonApp {
     */
     function initialize(Agent _agent, UniswapFactoryInterface _uniswapFactory, address[] _enabledTokens) external onlyInit {
         require(_enabledTokens.length <= MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
-        require(isContract(address(_agent)), ERROR_NOT_CONTRACT);
-        require(isContract(address(_uniswapFactory)), ERROR_NOT_CONTRACT);
-
-        for (uint256 enabledTokenIndex = 0; enabledTokenIndex < _enabledTokens.length; enabledTokenIndex++) {
-            address exchangeAddress = _uniswapFactory.getExchange(_enabledTokens[enabledTokenIndex]);
-            require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
-        }
+        require(isContract(address(_agent)), ERROR_AGENT_NOT_CONTRACT);
+        require(isContract(address(_uniswapFactory)), ERROR_FACTORY_NOT_CONTRACT);
 
         agent = _agent;
         uniswapFactory = _uniswapFactory;
         enabledTokens = _enabledTokens;
+
+        for (uint256 enabledTokenIndex = 0; enabledTokenIndex < _enabledTokens.length; enabledTokenIndex++) {
+            _verifyHasExchange(_enabledTokens[enabledTokenIndex]);
+        }
 
         initialized();
 
@@ -87,7 +87,7 @@ contract Uniswap is AragonApp {
     * @param _agent New Agent address
     */
     function setAgent(Agent _agent) external auth(SET_AGENT_ROLE) {
-        require(isContract(address(_agent)), ERROR_NOT_CONTRACT);
+        require(isContract(address(_agent)), ERROR_AGENT_NOT_CONTRACT);
 
         agent = _agent;
         emit NewAgentSet(address(_agent));
@@ -98,7 +98,7 @@ contract Uniswap is AragonApp {
     * @param _uniswapFactory New Uniswap Factory address
     */
     function setUniswapFactory(UniswapFactoryInterface _uniswapFactory) external auth(SET_UNISWAP_FACTORY_ROLE) {
-        require(isContract(address(_uniswapFactory)), ERROR_NOT_CONTRACT);
+        require(isContract(address(_uniswapFactory)), ERROR_FACTORY_NOT_CONTRACT);
 
         uniswapFactory = _uniswapFactory;
         emit NewUniswapFactorySet(address(_uniswapFactory));
@@ -111,9 +111,7 @@ contract Uniswap is AragonApp {
     function enableToken(address _token) public auth(SET_UNISWAP_TOKENS_ROLE) {
         require(enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
         require(!enabledTokens.contains(_token), ERROR_TOKEN_ALREADY_ADDED);
-
-        address exchangeAddress = uniswapFactory.getExchange(_token);
-        require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
+        _verifyHasExchange(_token);
 
         enabledTokens.push(_token);
         emit TokenEnabled(_token);
@@ -128,7 +126,7 @@ contract Uniswap is AragonApp {
         emit TokenDisabled(_token);
     }
 
-    function getEnabledTokens() public view returns (address[]) {
+    function getEnabledTokens() public view isInitialized returns (address[]) {
         return enabledTokens;
     }
 
@@ -139,6 +137,7 @@ contract Uniswap is AragonApp {
     */
     function deposit(address _token, uint256 _value) external payable isInitialized nonReentrant {
         if (_token == ETH) {
+            require(msg.value == _value, ERROR_VALUE_MISMATCH);
             // Can no longer use 'send()' due to EIP-1884 so we use 'call.value()' with a reentrancy guard instead
             (bool success, ) = address(agent).call.value(_value)();
             require(success, ERROR_SEND_REVERTED);
@@ -160,7 +159,7 @@ contract Uniswap is AragonApp {
     }
 
     /**
-    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
+    * @notice Swap `@tokenAmount(0x0000000000000000000000000000000000000000, _ethAmount, true, 18)` for at least `@tokenAmount(_token, _minTokenAmount, true, 18)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
     * @param _token Address of the token to swap ETH for
     * @param _ethAmount Amount of ETH to exchange for the token specified
     * @param _minTokenAmount Minimum amount of tokens to be exchanged for
@@ -172,16 +171,15 @@ contract Uniswap is AragonApp {
         auth(ETH_TOKEN_SWAP_ROLE)
     {
         address exchangeAddress = uniswapFactory.getExchange(_token);
-        require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 
         bytes memory encodedFunctionCall = abi.encodeWithSignature("ethToTokenSwapInput(uint256,uint256)", _minTokenAmount, _expiredAtTime);
         agent.execute(exchangeAddress, _ethAmount, encodedFunctionCall);
 
-        emit EthToTokenSwapInput(_token);
+        emit EthToTokenSwapInput(_ethAmount, _minTokenAmount, _token, address(agent));
     }
 
     /**
-    * @notice Swap `@tokenAmount(_token, _tokenAmount, true, 18)` for at least `@tokenAmount(0x0000000000000000000000000000000000000000, _minEthAmount)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
+    * @notice Swap `@tokenAmount(_token, _tokenAmount, true, 18)` for at least `@tokenAmount(0x0000000000000000000000000000000000000000, _minEthAmount, true, 18)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
     * @param _token Address of the token to swap ETH for
     * @param _tokenAmount Amount of tokens to exchange for Eth amount specified
     * @param _minEthAmount Minimum amount of Eth to be exchanged for
@@ -193,7 +191,6 @@ contract Uniswap is AragonApp {
         auth(TOKEN_ETH_SWAP_ROLE)
     {
         address exchangeAddress = uniswapFactory.getExchange(_token);
-        require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
 
         bytes memory approveFunctionCall = abi.encodeWithSignature("approve(address,uint256)", exchangeAddress, _tokenAmount);
         agent.safeExecute(_token, approveFunctionCall);
@@ -201,7 +198,12 @@ contract Uniswap is AragonApp {
         bytes memory encodedFunctionCall = abi.encodeWithSignature("tokenToEthSwapInput(uint256,uint256,uint256)", _tokenAmount, _minEthAmount, _expiredAtTime);
         agent.safeExecute(exchangeAddress, encodedFunctionCall);
 
-        emit TokenToEthSwapInput(_token);
+        emit TokenToEthSwapInput(_tokenAmount, _minEthAmount, _token, address(agent));
+    }
+
+    function _verifyHasExchange(address _token) internal {
+        address exchangeAddress = uniswapFactory.getExchange(_token);
+        require(exchangeAddress != address(0), ERROR_NO_EXCHANGE_FOR_TOKEN);
     }
 
 }

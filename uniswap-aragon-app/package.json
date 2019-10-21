@@ -11,7 +11,7 @@
     "openzeppelin-solidity": "^1.12.0"
   },
   "devDependencies": {
-    "@aragon/cli": "6.2.5",
+    "@aragon/cli": "6.3.3",
     "@aragon/test-helpers": "^1.2.2",
     "@babel/core": "^7.5.5",
     "@babel/polyfill": "^7.4.4",
@@ -39,7 +39,7 @@
     "start:ipfs": "aragon run",
     "start:http": "aragon run --http localhost:8001 --http-served-from ./dist",
     "start:ipfs:template": "npm run start:ipfs -- --template Template --template-init @ARAGON_ENS",
-    "start:http:template": "npm run start:http -- --template Template --template-init @ARAGON_ENS 0xA18C2b9eabBA5b41FcB2c4ACd34177CA45A957E5",
+    "start:http:template": "npm run start:http -- --template Template --template-init @ARAGON_ENS 0x67D87b795f232AA9B6D4786dBd08b8B1222Ec752",
     "prepare": "cd app && npm install && cd ..",
     "start:app": "cd app && npm start && cd ..",
     "test": "cross-env TRUFFLE_TEST=true npm run ganache-cli:test",

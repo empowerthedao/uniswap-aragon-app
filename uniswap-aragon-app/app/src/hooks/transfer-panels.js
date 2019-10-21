@@ -10,7 +10,7 @@ import {ETH_DECIMALS, ETHER_TOKEN_FAKE_ADDRESS} from "../lib/shared-constants";
 
 const checkBalanceAvailable = (api, account, token, amount, setBalanceAvailable) => {
 
-    if (!isAddress(token)) {
+    if (!isAddress(token) || !isAddress(account)) {
         setBalanceAvailable(true)
         return
     }

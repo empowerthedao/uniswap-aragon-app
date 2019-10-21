@@ -37,6 +37,7 @@ contract Uniswap is AragonApp {
     string private constant ERROR_TOKEN_TRANSFER_FROM_REVERTED = "UNISWAP_TOKEN_TRANSFER_FROM_REVERTED";
     string private constant ERROR_TOKEN_NOT_ENABLED = "UNISWAP_TOKEN_NOT_ENABLED";
     string private constant ERROR_TOKEN_APPROVE_REVERTED = "UNISWAP_TOKEN_APPROVE_REVERTED";
+    string private constant ERROR_UNEXPECTED_PURCHASE_AMOUNT = "UNISWAP_UNEXPECTED_PURCHASE_AMOUNT";
     string private constant ERROR_NO_EXCHANGE_FOR_TOKEN = "UNISWAP_NO_EXCHANGE_FOR_TOKEN";
 
     uint256 private constant MAX_ENABLED_TOKENS = 100;
@@ -182,7 +183,7 @@ contract Uniswap is AragonApp {
     * @notice Swap `@tokenAmount(_token, _tokenAmount, true, 18)` for at least `@tokenAmount(0x0000000000000000000000000000000000000000, _minEthAmount, true, 18)`. Expiring at `@formatDate(_expiredAtTime, 'MMMM do, h:mma')`
     * @param _token Address of the token to swap ETH for
     * @param _tokenAmount Amount of tokens to exchange for Eth amount specified
-    * @param _minEthAmount Minimum amount of Eth to be exchanged for
+    * @param _minEthAmount Minimum amount of Eth, in wei, to be exchanged for
     * @param _expiredAtTime Time from which the transaction will be considered invalid
     */
     function tokenToEthSwapInput(address _token, uint256 _tokenAmount, uint256 _minEthAmount, uint256 _expiredAtTime)
@@ -196,9 +197,31 @@ contract Uniswap is AragonApp {
         agent.safeExecute(_token, approveFunctionCall);
 
         bytes memory encodedFunctionCall = abi.encodeWithSignature("tokenToEthSwapInput(uint256,uint256,uint256)", _tokenAmount, _minEthAmount, _expiredAtTime);
-        agent.safeExecute(exchangeAddress, encodedFunctionCall);
+        uint256 weiBought = _safeExecuteReturnUint256(exchangeAddress, encodedFunctionCall);
+        require(_minEthAmount < weiBought, ERROR_UNEXPECTED_PURCHASE_AMOUNT);
 
         emit TokenToEthSwapInput(_tokenAmount, _minEthAmount, _token, address(agent));
+    }
+
+    /**
+    * @notice Execute the specified call on the agent and return the uint256 the call returns
+    * @param _target Address where the action is being executed
+    * @param _data Calldata for the action
+    * @return agent call return value of type uint256
+    */
+    function _safeExecuteReturnUint256(address _target, bytes _data) internal returns (uint256) {
+        agent.safeExecute(_target, _data);
+
+        uint256 callReturnValue;
+
+        assembly {
+            let output := mload(0x40)         // get a free memory pointer
+            mstore(0x40, add(output, 0x20))   // set the free memory pointer 32 bytes
+            returndatacopy(output, 0, 0x20)   // copy the first 32 bytes of data into output
+            callReturnValue := mload(output)  // read the data from output
+        }
+
+        return callReturnValue;
     }
 
     function _verifyHasExchange(address _token) internal {

@@ -59,6 +59,11 @@ contract Uniswap is AragonApp {
         _;
     }
 
+    modifier hasExchange(address _token) {
+        _verifyHasExchange(_token);
+        _;
+    }
+
     /**
     * @notice Initialize the Uniswap App
     * @param _agent The Agent contract address
@@ -109,10 +114,9 @@ contract Uniswap is AragonApp {
     * @notice Enable the Uniswap exchange for token `_token`
     * @param _token Token to enable
     */
-    function enableToken(address _token) public auth(SET_UNISWAP_TOKENS_ROLE) {
+    function enableToken(address _token) public hasExchange(_token) auth(SET_UNISWAP_TOKENS_ROLE) {
         require(enabledTokens.length < MAX_ENABLED_TOKENS, ERROR_TOO_MANY_TOKENS);
         require(!enabledTokens.contains(_token), ERROR_TOKEN_ALREADY_ADDED);
-        _verifyHasExchange(_token);
 
         enabledTokens.push(_token);
         emit TokenEnabled(_token);
@@ -169,6 +173,7 @@ contract Uniswap is AragonApp {
     function ethToTokenSwapInput(address _token, uint256 _ethAmount, uint256 _minTokenAmount, uint256 _expiredAtTime)
         external
         tokenIsEnabled(_token)
+        hasExchange(_token)
         auth(ETH_TOKEN_SWAP_ROLE)
     {
         address exchangeAddress = uniswapFactory.getExchange(_token);
@@ -189,6 +194,7 @@ contract Uniswap is AragonApp {
     function tokenToEthSwapInput(address _token, uint256 _tokenAmount, uint256 _minEthAmount, uint256 _expiredAtTime)
         external
         tokenIsEnabled(_token)
+        hasExchange(_token)
         auth(TOKEN_ETH_SWAP_ROLE)
     {
         address exchangeAddress = uniswapFactory.getExchange(_token);

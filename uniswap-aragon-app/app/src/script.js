@@ -11,7 +11,7 @@ import { agentInitializationBlock$, agentBalances$ } from "./web3/AgentData"
 import { ETHER_TOKEN_FAKE_ADDRESS } from "./lib/shared-constants"
 import { uniswapTokens$ } from "./web3/UniswapData"
 
-const DEBUG_LOGS = true
+const DEBUG_LOGS = false
 const debugLog = message => {
     if (DEBUG_LOGS) {
         console.debug(message)

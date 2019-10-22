@@ -96,6 +96,7 @@ class Balances extends React.Component {
                                             symbol={symbol}
                                             verified={verified}
                                             compact={compactMode}
+                                            address={address}
                                         />
                                     </ListItem>
                                 )

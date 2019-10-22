@@ -1,6 +1,8 @@
 import React from 'react'
 import { GU, textStyle, useTheme } from '@aragon/ui'
 import {formatTokenAmount} from "../../lib/format-utils";
+import { useNetwork } from "@aragon/api-react"
+import { iconSourceUrl } from "../../lib/token-utils"
 
 const splitAmount = amount => {
   const [integer, fractional] = formatTokenAmount(amount).split('.')
@@ -26,8 +28,11 @@ const BalanceToken = ({
   symbol,
   verified,
   convertedAmount = -1,
+    address
 }) => {
   const theme = useTheme()
+    const network = useNetwork()
+    const iconSource = iconSourceUrl(network, address, symbol)
 
   return (
     <React.Fragment>
@@ -48,7 +53,7 @@ const BalanceToken = ({
             alt=""
             width="20"
             height="20"
-            src={`https://chasing-coins.com/coin/logo/${symbol}`}
+            src={iconSource}
             css={`
               margin-right: ${0.75 * GU}px;
             `}

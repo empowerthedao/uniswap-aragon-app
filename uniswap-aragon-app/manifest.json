@@ -2,14 +2,14 @@
   "name": "Uniswap",
   "author": "EmpowerTheDao",
   "description": "Swap ETH and ERC20 tokens",
-  "details_url": "meta/details.md",
+  "details_url": "public/meta/details.md",
   "source_url": "https://github.com/empowerthedao/uniswap-aragon-app",
   "icons": [{
-    "src": "meta/icon.svg",
+    "src": "public/meta/icon.svg",
     "sizes": "56x56"
   }],
   "screenshots": [
-    { "src": "meta/screenshot-1.png" }
+    { "src": "public/meta/screenshot-1.png" }
   ],
   "start_url": "index.html",
   "script": "script.js"

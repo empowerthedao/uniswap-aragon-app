@@ -204,7 +204,7 @@ contract Uniswap is AragonApp {
 
         bytes memory encodedFunctionCall = abi.encodeWithSignature("tokenToEthSwapInput(uint256,uint256,uint256)", _tokenAmount, _minEthAmount, _expiredAtTime);
         uint256 weiBought = _safeExecuteReturnUint256(exchangeAddress, encodedFunctionCall);
-        require(_minEthAmount < weiBought, ERROR_UNEXPECTED_PURCHASE_AMOUNT);
+        require(_minEthAmount <= weiBought, ERROR_UNEXPECTED_PURCHASE_AMOUNT);
 
         emit TokenToEthSwapInput(_tokenAmount, _minEthAmount, _token, address(agent));
     }

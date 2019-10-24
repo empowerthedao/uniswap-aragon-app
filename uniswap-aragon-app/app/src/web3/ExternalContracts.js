@@ -21,7 +21,7 @@ const agentApp$ = (api) => {
 }
 
 const tokenContract$ = (api, tokenAddress) => {
-    if (tokenAddress === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
+    if (tokenAddress.toLowerCase() === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
         return of(api.external(tokenAddress, convertToDaiErc20Abi(ERC20Abi)))
     } else {
         return of(api.external(tokenAddress, ERC20Abi))

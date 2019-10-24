@@ -23,7 +23,7 @@ const uniswapTokens$ = api => {
 
     const uniswapToken = (address, decimals, name, symbol, verified, exchangeAddress) => {
 
-        if (address === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
+        if (address.toLowerCase() === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
             symbol = utils.parseBytes32String(symbol)
             name = utils.parseBytes32String(name)
         }

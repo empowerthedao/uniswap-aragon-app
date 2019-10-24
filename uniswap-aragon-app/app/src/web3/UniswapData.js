@@ -8,6 +8,8 @@ import {range, zip} from "rxjs"
 import {mergeMap, tap, toArray, map, concatMap} from "rxjs/operators";
 import {isTokenVerified$} from "./TokenVerification";
 import {onErrorReturnDefault} from "../lib/rx-error-operators";
+import { ETHER_TOKEN_VERIFIED_BY_SYMBOL } from "../lib/verified-tokens"
+import { utils } from "ethers"
 
 const allUniswapTokensAddresses$ = api =>
     uniswapFactory$(api).pipe(
@@ -19,14 +21,22 @@ const allUniswapTokensAddresses$ = api =>
 
 const uniswapTokens$ = api => {
 
-    const uniswapToken = (address, decimals, name, symbol, verified, exchangeAddress) => ({
-        address,
-        decimals,
-        name,
-        symbol,
-        verified,
-        exchangeAddress
-    })
+    const uniswapToken = (address, decimals, name, symbol, verified, exchangeAddress) => {
+
+        if (address === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
+            symbol = utils.parseBytes32String(symbol)
+            name = utils.parseBytes32String(name)
+        }
+
+        return {
+            address,
+            decimals,
+            name,
+            symbol,
+            verified,
+            exchangeAddress
+        }
+    }
 
     return enabledTokensAddresses$(api).pipe(
         concatMap(address => address),

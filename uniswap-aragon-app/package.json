@@ -39,7 +39,7 @@
     "start:ipfs": "aragon run",
     "start:http": "aragon run --http localhost:8001 --http-served-from ./dist",
     "start:ipfs:template": "npm run start:ipfs -- --template Template --template-init @ARAGON_ENS",
-    "start:http:template": "npm run start:http -- --template Template --template-init @ARAGON_ENS 0x67D87b795f232AA9B6D4786dBd08b8B1222Ec752",
+    "start:http:template": "npm run start:http -- --template Template --template-init @ARAGON_ENS 0xF4902c553a6DEB20375Fb9d0468808F60D0167d5",
     "prepare": "cd app && npm install && cd ..",
     "start:app": "cd app && npm start && cd ..",
     "test": "cross-env TRUFFLE_TEST=true npm run ganache-cli:test",

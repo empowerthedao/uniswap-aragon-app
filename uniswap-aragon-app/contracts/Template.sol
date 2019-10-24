@@ -65,7 +65,7 @@ contract Template is TemplateBase {
         tokenFactory = new MiniMeTokenFactory();
         uniswapFactory = _uniswapFactory;
 
-        enabledTokens.push(address(0x019F12a7DAa44A34CD0FF35055b0e2D4679D8521));
+        enabledTokens.push(address(0x5f599E95bb1B5EAF477F64D7c7571a44d0E66808));
 //        enabledTokens.push(address(0x8D0E74651A0432deb113702EeA6E00cB6E6d20A0));
     }
 

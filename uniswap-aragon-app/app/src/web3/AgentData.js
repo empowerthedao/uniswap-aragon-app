@@ -4,6 +4,8 @@ import {agentAddress$, agentApp$, tokenContract$} from "./ExternalContracts";
 import {ETHER_TOKEN_FAKE_ADDRESS, ETH_DECIMALS} from "../lib/shared-constants";
 import {onErrorReturnDefault} from "../lib/rx-error-operators";
 import {isTokenVerified$} from "./TokenVerification";
+import { ETHER_TOKEN_VERIFIED_BY_SYMBOL } from "../lib/verified-tokens"
+import { utils } from "ethers"
 
 const agentInitializationBlock$ = (api) =>
     agentApp$(api).pipe(
@@ -30,14 +32,22 @@ const agentEthBalance$ = api => {
 
 const agentTokenBalance$ = (api, tokenAddress) => {
 
-    const balanceObject = (decimals, name, symbol, address, balance, isTokenVerified) => ({
-        decimals: decimals,
-        name: name,
-        symbol: symbol,
-        address: address,
-        amount: balance,
-        verified: isTokenVerified,
-    })
+    const balanceObject = (decimals, name, symbol, address, balance, isTokenVerified) => {
+
+        if (address.toLowerCase() === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
+            symbol = utils.parseBytes32String(symbol)
+            name = utils.parseBytes32String(name)
+        }
+
+        return {
+            decimals: decimals,
+            name: name,
+            symbol: symbol,
+            address: address,
+            amount: balance,
+            verified: isTokenVerified,
+        }
+    }
 
     return zip(agentAddress$(api), tokenContract$(api, tokenAddress)).pipe(
         mergeMap(([agentAddress, token]) =>

@@ -7,8 +7,8 @@ The current functionality allows multiple Uniswap exchanges to be enabled in the
  exchanges in return for their corresponding tokens, and the tokens can be swapped for ETH. There isn't currently UI for
  enabling/disabling Uniswap token exchanges, but they can be enabled/disabled during initialization and by using the Aragon CLI.
 
-#### :rotating_light: Security review status: pre-audit  
-The code in this repo has not been audited.
+#### :white_check_mark: Security review status: Audited
+The Solidity code in this repo has been audited, see [the report](https://github.com/empowerthedao/uniswap-aragon-app/tree/master/audit).
 
 ## Deployment Instructions
 

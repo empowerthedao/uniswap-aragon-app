@@ -58,8 +58,8 @@ const Settings = ({handleNewAgent, handleNewUniswapFactory, settings, compactMod
 
                     <div css={`display: flex; flex-direction: column;`}>
                         <Text>
-                            The contract that represents an EOA (Externally Owned Account) and acts on behalf of the
-                            Compound app.
+                            The Aragon Agent contract instance that the Uniswap app uses to interact with
+                            Uniswap. All funds are stored in the Agent address.
                         </Text>
 
                         <MarginTopContainer>

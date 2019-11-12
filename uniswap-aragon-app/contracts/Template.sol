@@ -29,7 +29,7 @@ contract TemplateBase is APMNamehash {
     ENS public ens;
     DAOFactory public fac;
 
-    event DeployInstance(address dao);
+    event DeployDao(address dao);
     event InstalledApp(address appProxy, bytes32 appId);
 
     constructor(DAOFactory _fac, ENS _ens) public {
@@ -65,7 +65,7 @@ contract Template is TemplateBase {
         tokenFactory = new MiniMeTokenFactory();
         uniswapFactory = _uniswapFactory;
 
-        enabledTokens.push(address(0x5f599E95bb1B5EAF477F64D7c7571a44d0E66808));
+        enabledTokens.push(address(0x777382CA6A5324085a7f88976e568C130162A253));
 //        enabledTokens.push(address(0x8D0E74651A0432deb113702EeA6E00cB6E6d20A0));
     }
 
@@ -122,6 +122,6 @@ contract Template is TemplateBase {
         acl.revokePermission(this, acl, acl.CREATE_PERMISSIONS_ROLE());
         acl.setPermissionManager(root, acl, acl.CREATE_PERMISSIONS_ROLE());
 
-        emit DeployInstance(dao);
+        emit DeployDao(dao);
     }
 }

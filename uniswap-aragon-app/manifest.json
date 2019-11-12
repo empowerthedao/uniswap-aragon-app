@@ -5,7 +5,7 @@
   "details_url": "public/meta/details.md",
   "source_url": "https://github.com/empowerthedao/uniswap-aragon-app",
   "icons": [{
-    "src": "public/meta/icon.svg",
+    "src": "public/meta/uniswap-icon.svg",
     "sizes": "56x56"
   }],
   "screenshots": [

@@ -32,7 +32,8 @@ const BalanceToken = ({
 }) => {
   const theme = useTheme()
     const network = useNetwork()
-    const iconSource = iconSourceUrl(network, address, symbol)
+    // const iconSource = iconSourceUrl(network, address, symbol)
+    const iconSource = `https://chasing-coins.com/coin/logo/${symbol}`
 
   return (
     <React.Fragment>

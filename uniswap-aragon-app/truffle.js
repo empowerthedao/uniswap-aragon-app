@@ -57,7 +57,7 @@ module.exports = {
             network_id: 1,
             provider: providerForNetwork('mainnet'),
             gas: 9.5e6,
-            gasPrice: 8000000001 // 8 gwei
+            gasPrice: 5000000001 // 5 gwei
         },
         rinkeby: {
             network_id: 4,

@@ -9,7 +9,8 @@ import { iconSourceUrl } from "../../../../lib/token-utils"
 
 const TokenSelectorInstance = ({ address, name, symbol, showIcon = true }) => {
     const network = useNetwork()
-    const iconSource = iconSourceUrl(network, address, symbol)
+    // const iconSource = iconSourceUrl(network, address, symbol)
+    const iconSource = `https://chasing-coins.com/coin/logo/${symbol}`
     return (
         <Main>
             {showIcon ? (

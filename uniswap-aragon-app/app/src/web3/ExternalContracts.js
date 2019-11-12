@@ -1,11 +1,11 @@
 import AgentAbi from '../abi/agent-abi'
 import ProxyDepositEvent from '../abi/proxy-deposit-event'
 import ERC20Abi from '../abi/erc20-abi'
+import ERC20DaiAbi from '../abi/erc20-dai-abi'
 import UniswapExchangeAbi from '../abi/uniswap-exchange-abi'
 import UniswapFactoryAbi from '../abi/uniswap-factory-abi'
 import {of} from 'rxjs'
 import {concatMap, map, mergeMap, toArray} from 'rxjs/operators'
-import { convertToDaiErc20Abi } from "../lib/abi-utils"
 import { ETHER_TOKEN_VERIFIED_BY_SYMBOL } from "../lib/verified-tokens"
 
 const agentAddress$ = api => api.call('agent')
@@ -22,7 +22,7 @@ const agentApp$ = (api) => {
 
 const tokenContract$ = (api, tokenAddress) => {
     if (tokenAddress.toLowerCase() === ETHER_TOKEN_VERIFIED_BY_SYMBOL.get("DAI")) {
-        return of(api.external(tokenAddress, convertToDaiErc20Abi(ERC20Abi)))
+        return of(api.external(tokenAddress, ERC20DaiAbi))
     } else {
         return of(api.external(tokenAddress, ERC20Abi))
     }

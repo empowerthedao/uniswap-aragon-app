@@ -70,7 +70,7 @@ const Withdraw = ({balances, tokens, handleWithdraw}) => {
                         required
                         wide
                     />
-                    <DropDown css={`margin-left: 16px;`}
+                    <DropDown css={`margin-left: 16px;  min-width: 87px;`}
                               items={tokenSymbols}
                               selected={selectedToken}
                               onChange={selectedTokenIndex => setSelectedToken(selectedTokenIndex)}

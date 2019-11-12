@@ -125,3 +125,13 @@ You can now visit the DAO's Home page at `https://rinkeby.aragon.org/#/<DAO-Addr
 You can also view the Uniswap App at `https://rinkeby.aragon.org/#/<DAO-Address>/<Uniswap-App-Proxy-Address>`
 
 ![Screenshot from 2019-09-06 18-53-06](https://user-images.githubusercontent.com/2212651/64445976-f5174600-d0d7-11e9-90d8-84b21b7bedc3.png)
+
+### Installing in Mainnet
+
+To run this script on Ethereum Mainnet, you will need to replace all instances of `aragon:rinkeby` with `aragon:mainnet`. This will also require your copy of the `aragoncli` to be configured to operate on mainnet.
+
+In addition, you will need to use different hex addresses for contracts used on Ethereum mainnet:
+
+For `<Uniswap-Factory-Address>`, you should use `0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95` which is Uniswap's factory address on Mainnet, as defined in [Uniswap's documentation](https://docs.uniswap.io/frontend-integration/connect-to-uniswap).
+
+For `<Swap-Token-Address>`, you can use `0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa` which is a [token tracker for DAI](https://etherscan.io/token/0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359) on Mainnet.

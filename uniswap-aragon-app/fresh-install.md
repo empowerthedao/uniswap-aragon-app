@@ -98,12 +98,20 @@ dao install <DAO-Address> uniswap.open.aragonpm.eth --app-init-args <Agent-App-P
 
 ### Configure the Agent app
 
-In order for the Uniswap Aragon App to transact via the Agent, the following commands need to be run, to set the permissions on the Agent app:
+In order for the Uniswap Aragon App to transact via the Agent, the following commands need to be run, to create the permissions on the Agent app:
 
 ```
 dao acl create <DAO-Address> <Agent-App-Proxy-Address> EXECUTE_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 dao acl create <DAO-Address> <Agent-App-Proxy-Address> SAFE_EXECUTE_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
 dao acl create <DAO-Address> <Agent-App-Proxy-Address> TRANSFER_ROLE <Uniswap-App-Proxy-Address> <Voting-App-Proxy-Address> --environment aragon:rinkeby
+```
+
+Note: if these ROLES have already been created on the Agent app, you will need to instead run the following commands to grant the roles:
+
+```
+dao acl grant <DAO-Address> <Agent-App-Proxy-Address> EXECUTE_ROLE <Uniswap-App-Proxy-Address> --environment aragon:rinkeby
+dao acl grant <DAO-Address> <Agent-App-Proxy-Address> SAFE_EXECUTE_ROLE <Uniswap-App-Proxy-Address> --environment aragon:rinkeby
+dao acl grant <DAO-Address> <Agent-App-Proxy-Address> TRANSFER_ROLE <Uniswap-App-Proxy-Address> --environment aragon:rinkeby
 ```
 
 ### Configure the Uniswap Aragon App
